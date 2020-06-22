@@ -1,0 +1,121 @@
+
+body {font-family: Arial, Helvetica, sans-serif;}
+
+/* The Modal (background) */
+.modal {
+  display: none;
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.show{
+  display: block;
+}
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+  color: black;
+  float: right;
+  font-size: 20px;
+  font-weight: 100;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+.modal-body {padding: 10px 30px 20px 30px}
+
+.modal-footer {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+.pophead #header{
+  font-size: 30px;
+  font-weight: 200px;
+
+}
+.pophead a{
+
+  font-size: 20px;
+  font-weight: 200px;
+  color: #00ace6;
+  cursor: pointer;
+}
+.pophead a:hover{
+  text-decoration: underline;
+}
+.xaxis{
+  margin-top: 20px;
+}
+.xaxis input{
+  margin-left: 15px;
+}
+.xaxis input[type=number]{
+  width: 30px;
+}
+.footerbtn{
+  margin-top: 30px;
+  text-align: center;
+}
+.innerfooter{
+  width: 20%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+.innerfooter button{
+  padding: 5px 20px;
+  border: none;
+  border-radius: 4px;
+}
+.innerfooter #apply{
+  background-color: #00ace6;
+  color: #fefefe;
+}
+.innerfooter #cancel{
+  background-color: #808080;;
+  color: #fefefe;
+}

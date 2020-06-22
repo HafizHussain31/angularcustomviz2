@@ -1,0 +1,10 @@
+Start Date,Start Time,End Date,End Time,Category,Type,Amount,Units,Toggle 4  Indicator
+03/12/2019,00:03:40,03/12/2019,00:05:40,Meds 1,Meds1 - Type 1,35,mg/mL,Non-compliant
+03/12/2019,00:05:40,03/12/2019,00:06:40,Meds 1,Meds1 - Type 2,5,mg,Compliant
+03/12/2019,1:05:40,03/12/2019,1:07:40,Meds 1,Meds1 - Type 2,5,mg,Partial
+03/12/2019,00:16:40,03/12/2019,0:17:40,Meds2,Meds2 - Type 1,1.5,g,Non-compliant
+03/12/2019,4:16:40,03/12/2019,4:17:50,Meds2,Meds2 - Type 1,1.5,g,Compliant
+03/12/2019,4:38:00,03/12/2019,4:39:10,Meds2,Meds2 - Type 2,1000,mg,Partial
+03/12/2019,00:45:20,03/12/2019,00:46:30,Meds3,Meds3 - Type 1,50,mg/mL,Non-compliant
+03/12/2019,3:45:20,03/12/2019,3:46:20,Meds3,Meds3 - Type 1,50,mg/mL,Compliant
+03/12/2019,6:45:20,03/12/2019,6:46:20,Meds3,Meds3 - Type 1,50,mg/mL,Partial

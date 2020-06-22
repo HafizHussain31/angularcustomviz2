@@ -1,0 +1,14 @@
+Replacement ,Min Yellow,Min Green,Max G,Max Yellow,Above %,In %,Below %
+Chart B,49.5,55,90,99,0,99,1
+Chart A,1.8,2,4.5,4.95,0,99,1
+Chart C,3.6,4,8,8.8,0,92,8
+Chart D,54,60,90,99,,,
+Chart F,54,60,100,110,0,86,14
+Chart G,,-,-,,,,
+Chart H,1.8,2,6,6.6,100,0,0
+Chart I,45,50,100,110,0,95,5
+Chart J,27,30,60,66,0,93,7
+Chart K,720,800,1200,1320,1,87,12
+Chart L,1440,1600,2400,2640,0,67,33
+Chart M,0,0,10,11,92,8,0
+Chart N,81,90,140,154,,,

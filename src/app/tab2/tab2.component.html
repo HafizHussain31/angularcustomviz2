@@ -1,0 +1,10 @@
+<div class="container">
+    <p>tab2 works!</p>
+    <mat-form-field>
+        <mat-select [formControl]="charts" multiple>
+            <mat-option *ngFor="let chart of chartsList" [value]="chart">{{chart}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <p>You selected {{charts.value}}</p>
+    <app-tab2chart selectedCharts={{charts.value}}></app-tab2chart>
+</div>

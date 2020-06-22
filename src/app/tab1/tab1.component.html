@@ -1,0 +1,65 @@
+<div class="container">
+    <p>Tab1 works</p>
+
+    <div class="row">
+        <mat-form-field>
+            <mat-select [formControl]="charts" multiple (selectionChange)="changed()">
+                <mat-option *ngFor="let chart of chartsList" [value]="chart">{{chart}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle1" *ngIf="!splchart">
+            Toggle 1
+        </mat-slide-toggle>
+        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle2" *ngIf="!splchart">
+            Toggle 2
+        </mat-slide-toggle>
+        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle3" *ngIf="!splchart">
+            Toggle 3
+        </mat-slide-toggle>
+        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle4" *ngIf="!splchart">
+            Toggle 4
+        </mat-slide-toggle>
+        <mat-slide-toggle class="example-margin" color="white" [(ngModel)]="toggle5" *ngIf="!splchart">
+            Toggle 5
+        </mat-slide-toggle>
+    </div>
+
+    <app-tab1chart [hidden]="splchart" *ngFor="let chart of mySelections" [chart]="chart" ></app-tab1chart>
+    <app-tab1specialchart *ngIf="splchart"> </app-tab1specialchart>
+
+    <div class="row" *ngIf="!splchart">
+        <mat-accordion>
+            <mat-expansion-panel [expanded]="toggle1" disabled="true">
+                <app-toggle1chart></app-toggle1chart>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <div class="row" *ngIf="!splchart">
+        <mat-accordion>
+            <mat-expansion-panel [expanded]="toggle2" disabled="true">
+                <app-toggle2chart></app-toggle2chart>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <div class="row" *ngIf="!splchart">
+        <mat-accordion>
+            <mat-expansion-panel [expanded]="toggle3" disabled="true">
+                <app-toggle3chart></app-toggle3chart>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <div class="row" *ngIf="!splchart">
+        <mat-accordion>
+            <mat-expansion-panel [expanded]="toggle4" disabled="true">
+                <app-toggle4chart></app-toggle4chart>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <div class="row" *ngIf="!splchart">
+        <mat-accordion>
+            <mat-expansion-panel [expanded]="toggle5" disabled="true">
+                <app-toggle5chart></app-toggle5chart>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+</div>

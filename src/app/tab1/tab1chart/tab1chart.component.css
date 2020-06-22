@@ -1,0 +1,8 @@
+table, th, td {
+  border: 0px solid white;
+  background-color:transparent;
+}
+
+table, th, tr, td:hover {
+   background-color: transparent;
+}

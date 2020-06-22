@@ -1,0 +1,3 @@
+<app-header [activeTab]="tabActive" (activeTabChanged)='activeTabChanged($event)'></app-header>
+<app-tab1 *ngIf="tabActive=='tab1'"></app-tab1>
+<app-tab2 *ngIf="tabActive=='tab2'"></app-tab2>
