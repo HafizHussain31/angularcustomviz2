@@ -55,11 +55,12 @@ export class Toggle3chartComponent implements OnInit {
         console.log(groupedstates);
 
 
-        let seriesdata : any;
+        var seriesdata = [];
         for (let i = 0; i < catUnique.length; i++) {
-          var seriesdatum : any;
-          seriesdatum.name = catUnique[i];
-          seriesdatum.data = groupedstates[catUnique[i]];
+          var seriesdatum = {
+            name : catUnique[i],
+            data : groupedstates[catUnique[i]]
+          }
           seriesdata.push(seriesdatum)
         }
 
@@ -343,13 +344,14 @@ export class Toggle3chartComponent implements OnInit {
                       .attr('y', function(d) {
 
                         let catspace = 0;
-
+                        var totalcatdatum : any;
                         // Uncomment Mandatory
                         if(prevCat === ""){
                           prevCat = d.category;
-                          let totalcatdatum : any;
-                          totalcatdatum.category =  d.category;
-                          totalcatdatum.yAxis = 0;
+                          totalcatdatum = {
+                            category : d.category,
+                            yAxis : 0
+                          };
                           let arr = groupBy(seriesFinalData, "Category")[d.category];
                           const catUnique = [...new Set(arr.map(item => item['label']))];
                           totalcatdatum.count = catUnique.length;
@@ -361,9 +363,10 @@ export class Toggle3chartComponent implements OnInit {
                         else if(prevCat !== d.category)  {
                           prevCat = d.category;
                           nextlevelCat += 30;
-                          var totalcatdatum : any;
-                          totalcatdatum.category =  d.category;
-                          totalcatdatum.yAxis = nextlevelCat;
+                          totalcatdatum = {
+                            category : d.category,
+                            yAxis : nextlevelCat
+                          };
                           let arr = groupBy(seriesFinalData, "Category")[d.category];
                           const catUnique = [...new Set(arr.map(item => item['label']))];
                           totalcatdatum.count = catUnique.length;
