@@ -1,19 +1,9 @@
-<div class="pophead">
-  <span (click)='showPopUp=!showPopUp' class="close">&times;</span>
-  <p id="header">Set Chart Min/Max</p>
-  <a (click)='restoredefault()'>Reset to default</a>
+<h1 mat-dialog-title>Hi</h1>
+<div mat-dialog-content>
+  <p>What's your email?</p>
+  <input matInput [(ngModel)]="animal" />
 </div>
-<div class="xaxis">
-  <label><b>X-axis:</b></label><br><br>
-  <label>Max:<input type="datetime-local" [(ngModel)]="XAxisMax"></label>
-  <label style="margin-left: 30px;">Min:<input type="datetime-local" [(ngModel)]="XAxisMin"></label><br><br>
-  <label><b>Y-axis:</b></label><br><br>
-  <label>Max:<input type="number" [(ngModel)]="YAxisMax"></label>
-  <label style="margin-left: 50px;">Min:<input type="number" [(ngModel)]="YAxisMin"></label>
-</div>
-<div class="footerbtn">
-  <div class="innerfooter">
-    <button id="cancel" (click)='showPopUp=!showPopUp'>Cancel</button>
-    <button id="apply" style="margin-left: 50px;" (click)='apply()'>Apply</button>
-  </div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onCancelClick()">Cancel</button>
+    <button mat-button (click)="onClickApply()" cdkFocusInitial>Apply</button>
 </div>
