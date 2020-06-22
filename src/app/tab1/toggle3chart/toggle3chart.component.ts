@@ -55,9 +55,9 @@ export class Toggle3chartComponent implements OnInit {
         console.log(groupedstates);
 
 
-        let seriesdata = [];
+        let seriesdata : any;
         for (let i = 0; i < catUnique.length; i++) {
-          var seriesdatum = {};
+          var seriesdatum : any;
           seriesdatum.name = catUnique[i];
           seriesdatum.data = groupedstates[catUnique[i]];
           seriesdata.push(seriesdatum)
@@ -347,7 +347,7 @@ export class Toggle3chartComponent implements OnInit {
                         // Uncomment Mandatory
                         if(prevCat === ""){
                           prevCat = d.category;
-                          let totalcatdatum = {}
+                          let totalcatdatum : any;
                           totalcatdatum.category =  d.category;
                           totalcatdatum.yAxis = 0;
                           let arr = groupBy(seriesFinalData, "Category")[d.category];
@@ -361,7 +361,7 @@ export class Toggle3chartComponent implements OnInit {
                         else if(prevCat !== d.category)  {
                           prevCat = d.category;
                           nextlevelCat += 30;
-                          var totalcatdatum = {}
+                          var totalcatdatum : any;
                           totalcatdatum.category =  d.category;
                           totalcatdatum.yAxis = nextlevelCat;
                           let arr = groupBy(seriesFinalData, "Category")[d.category];
