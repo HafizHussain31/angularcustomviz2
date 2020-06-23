@@ -110,6 +110,8 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
           yellowRangeData.push(tmp1);
 
           console.log(greenRangeData);
+          console.log(yellowRangeData);
+
 
           options = {
             chart: {
@@ -127,7 +129,23 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
             },
             xAxis: {
               type: 'datetime',
-              opposite:true
+              opposite:true,
+              events: {
+                afterSetExtremes: function (event) {
+                  var divs = document.getElementsByClassName("rowtab1");
+                  for(var i = 0; i < divs.length; i++){
+                    console.log(event.min, event.max);
+
+                    if(divs[i].id === 'tab1-' + this.chartid)
+                      continue;
+
+                    var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+                    var chartPartner = Highcharts.charts[index];
+                    chartPartner.xAxis[0].setExtremes(event.min, event.max);
+                    chartPartner.showResetZoom();
+                  }
+                }
+            },
             },
             yAxis: {
               title: {
@@ -226,4 +244,106 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
 
 
   }
+
+public setinterval(xmin, xmax, ymin, ymax) {
+  var divs = document.getElementsByClassName("rowtab1");
+
+  for(var i = 0; i < divs.length; i++){
+    var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+    var chartPartner = Highcharts.charts[index];
+    chartPartner.xAxis[0].setExtremes(xmin, xmax);
+    chartPartner.yAxis[0].setExtremes(ymin, ymax);
+    chartPartner.showResetZoom();
+  }
+}
+
+public groupBy(xs, key) {
+  return xs.reduce(function(rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+}
+
+public addtoggle3series(seriesFinalData) {
+
+  var divs = document.getElementsByClassName("rowtab1");
+
+  for(var i = 0; i < divs.length; i++){
+    var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+    var chartPartner = Highcharts.charts[index];
+
+    var groupedata = this.groupBy(seriesFinalData, "Category");
+    const catUnique = [...new Set(seriesFinalData.map(item => item['Category']))];
+
+  var chartseriesarr = [];
+    for (let i = 0; i < Object.keys(groupedata).length; i++) {
+      var color = D3.schemeCategory20
+      var curcolor = color[i];
+        console.log(curcolor, i);
+        var groupearrs:any[] = Object.values(groupedata);
+        var currentarr:any[] = groupearrs[i];
+        for (let j = 0; j < currentarr.length; j++) {
+          var ele = currentarr[j];
+          var data = [];
+
+          var datum1 = [];
+          datum1.push(ele.startDate);
+          datum1.push(chartPartner.yAxis[0].dataMin);
+          datum1.push(chartPartner.yAxis[0].dataMax);
+          var datum2 = [];
+          datum2.push(ele.endDate)
+          datum2.push(chartPartner.yAxis[0].dataMin);
+          datum2.push(chartPartner.yAxis[0].dataMax);
+          data.push(datum1);
+          data.push(datum2);
+
+          var chartseries = {
+            name: catUnique[i] + "_toggle3",
+            id : 'toggle3',
+            data: data,
+            color: curcolor,
+            type: 'arearange',
+          };
+
+          chartseriesarr.push(chartseries);
+        }
+    }
+
+    for (let j = 0; j < chartseriesarr.length; j++) {
+        chartPartner.addSeries(chartseriesarr[j]);
+    }
+  }
+
+
+  console.log(chartseriesarr);
+
+
+
+
+}
+
+public removetoggle3series() {
+  var divs = document.getElementsByClassName("rowtab1");
+
+  for(var i = 0; i < divs.length; i++){
+    var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+    var chartPartner = Highcharts.charts[index];
+    var seriesLength = chartPartner.series.length;
+    console.log(seriesLength);
+
+                var seriestoberemoved = [];
+                for(var j = 0; j < seriesLength; j++)
+                {
+                    if(chartPartner.series[j].name.includes("toggle3")) {
+                      seriestoberemoved.push(chartPartner.series[j])
+                    }
+                }
+
+                for (let k = 0; k < seriestoberemoved.length; k++) {
+                    seriestoberemoved[k].remove();
+                }
+  }
+
+}
+
 }

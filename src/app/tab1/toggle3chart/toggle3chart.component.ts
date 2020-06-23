@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, OnDestroy } from '@angular/core';
+import { Tab1chartComponent } from '../tab1chart/tab1chart.component';
 import * as D3 from 'd3v4';
 
 @Component({
@@ -7,6 +8,8 @@ import * as D3 from 'd3v4';
   styleUrls: ['./toggle3chart.component.css']
 })
 export class Toggle3chartComponent implements OnInit {
+
+  @Input() filteredData: any;
 
   constructor() { }
 
@@ -41,6 +44,14 @@ export class Toggle3chartComponent implements OnInit {
 
         console.log(states);
 
+        if(this.filteredData !== undefined) {
+          var tmp =  states.filter(function (e) {
+                  return e.startDate >= this.filteredData.xAxisMin && e.endDate <= this.filteredData.xAxisMax;
+          });
+
+          states = tmp;
+        }
+
         function groupBy(xs, key) {
           return xs.reduce(function(rv, x) {
             (rv[x[key]] = rv[x[key]] || []).push(x);
@@ -50,10 +61,6 @@ export class Toggle3chartComponent implements OnInit {
 
         const catUnique = [...new Set(states.map(item => item['label']))];
         var groupedstates = groupBy(states, "label");
-
-        console.log(catUnique);
-        console.log(groupedstates);
-
 
         var seriesdata = [];
         for (let i = 0; i < catUnique.length; i++) {
@@ -284,6 +291,8 @@ export class Toggle3chartComponent implements OnInit {
 
                   const createChartSVG = (data, placeholder, { svgWidth, svgHeight, elementHeight, scaleWidth, scaleHeight, fontSize, minStartDate, maxEndDate, margin, showRelations }) => {
                     // create container element for the whole chart
+                    var svgtodelete = D3.select("#toggle3chart");
+                    svgtodelete.selectAll("*").remove();
                     const svg = D3.select("#toggle3chart").append('svg').attr('width', svgWidth).attr('height', svgHeight);
 
                     const xScale = D3.scaleTime()
@@ -617,9 +626,17 @@ export class Toggle3chartComponent implements OnInit {
                   });
 
 
+                  let tabchart1comp = new Tab1chartComponent();
+                  tabchart1comp.addtoggle3series(states);
 
     });
 
   }
 
+
+  public chartinterval(data){
+    this.filteredData = data;
+    this.ngOnInit();
+
+    }
 }

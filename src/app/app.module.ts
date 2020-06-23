@@ -57,7 +57,10 @@ import { DialogOverviewExampleDialog } from './header/header.component';
     MatExpansionModule,
   ],
   exports: [
-
+    Toggle2chartComponent,
+    Toggle3chartComponent,
+    Tab1Component,
+    Tab1chartComponent
   ],
   providers: [],
   bootstrap: [AppComponent],

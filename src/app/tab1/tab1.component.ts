@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Tab1chartComponent } from './tab1chart/tab1chart.component'
 
 @Component({
   selector: 'app-tab1',
@@ -34,6 +35,21 @@ export class Tab1Component implements OnInit {
     this.charts.setValue(anotherList)
     this.mySelections = ['Chart A'];
   }
+
+  onExpand() {
+
+  }
+
+  onToggle(event) {
+
+      if(!event.checked) {
+        let tab1chart = new Tab1chartComponent();
+        tab1chart.removetoggle3series();
+
+      }
+
+  }
+
   changed() {
     if (this.charts.value.length < 5) {
       if(this.charts.value.includes('Special')) {

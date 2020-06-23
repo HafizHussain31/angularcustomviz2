@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, OnDestroy } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { ganttChart } from 'highcharts/highcharts-gantt';
 import * as D3 from 'd3v4';
@@ -18,24 +18,28 @@ noData(Highcharts);
   styleUrls: ['./toggle2chart.component.css']
 })
 export class Toggle2chartComponent implements OnInit {
+
+  @Input() filteredData: any;
+
   public options: any = {
   }
   constructor() { }
 
   ngOnInit(): void {
+
+
     var
       map = Highcharts.map,
       series,
       states = [];
 
-    D3.csv('./assets/Toggle2.csv', function(data) {
-
-
+    D3.csv('./assets/Toggle2.csv', (data) => {
 
 
       let groupedData = D3.nest()
         .key(function (d) { return d.Category; })
         .entries(data);
+
       groupedData.forEach((element) => {
         let tmp = [];
         tmp['model'] = element['key'];
@@ -53,6 +57,16 @@ export class Toggle2chartComponent implements OnInit {
         states.push(tmp);
       });
 
+
+
+      if(this.filteredData !== undefined) {
+        for (let i = 0; i < states.length; i++) {
+          var tmp =  states[i].deals.filter(function (e) {
+                  return e.from >= this.filteredData.xAxisMin && e.to <= this.filteredData.xAxisMax;
+          });
+          states[i].deals = tmp;
+        }
+      }
 
       series = states.map(function (car, i) {
         let model = car.model;
@@ -75,9 +89,6 @@ export class Toggle2chartComponent implements OnInit {
           // current: car.deals[car.current]
         };
       });
-
-
-     console.log(series);
 
 
     // kind of https://s3.amazonaws.com/wordpress-production/wp-content/uploads/sites/15/2016/04/gantt-updated-dependencies-1024x578.png
@@ -273,6 +284,8 @@ export class Toggle2chartComponent implements OnInit {
 
     const createChartSVG = (data, placeholder, { svgWidth, svgHeight, elementHeight, scaleWidth, scaleHeight, fontSize, minStartDate, maxEndDate, margin, showRelations }) => {
       // create container element for the whole chart
+      var svgtodelete = D3.select("#toggle2chart2");
+      svgtodelete.selectAll("*").remove();
       const svg = D3.select("#toggle2chart2").append('svg').attr('width', svgWidth).attr('height', svgHeight);
 
       const xScale = D3.scaleTime()
@@ -452,7 +465,15 @@ export class Toggle2chartComponent implements OnInit {
 
   }
 
+  public buildChart() {
 
+  }
+
+  public chartinterval(data){
+    this.filteredData = data;
+    this.ngOnInit();
+
+    }
 
 
 

@@ -13,7 +13,7 @@
         <mat-slide-toggle class="example-margin" [(ngModel)]="toggle2" *ngIf="!splchart">
             Toggle 2
         </mat-slide-toggle>
-        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle3" *ngIf="!splchart">
+        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle3" *ngIf="!splchart" (change)="onToggle($event)">
             Toggle 3
         </mat-slide-toggle>
         <mat-slide-toggle class="example-margin" [(ngModel)]="toggle4" *ngIf="!splchart">
@@ -34,16 +34,16 @@
             </mat-expansion-panel>
         </mat-accordion>
     </div>
-    <div class="row" *ngIf="!splchart">
+    <div class="row" *ngIf="toggle2 && !splchart">
         <mat-accordion>
             <mat-expansion-panel [expanded]="toggle2" disabled="true">
                 <app-toggle2chart></app-toggle2chart>
             </mat-expansion-panel>
         </mat-accordion>
     </div>
-    <div class="row" *ngIf="!splchart">
-        <mat-accordion>
-            <mat-expansion-panel [expanded]="toggle3" disabled="true">
+    <div class="row" *ngIf="toggle3 && !splchart">
+        <mat-accordion >
+            <mat-expansion-panel [expanded]="toggle3" disabled="true" >
                 <app-toggle3chart></app-toggle3chart>
             </mat-expansion-panel>
         </mat-accordion>
