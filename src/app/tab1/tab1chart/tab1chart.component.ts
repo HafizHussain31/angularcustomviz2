@@ -82,9 +82,6 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
           this.below = belowdata.toFixed(2) + "% below";
           this.within = withindata.toFixed(2) + "% within";
 
-          console.log(abovedata, belowdata, withindata);
-
-
           let greenRangeData = [];
           let tmp1 = [];
           tmp1[0] = seriesData[0][0];
@@ -134,9 +131,36 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
                 afterSetExtremes: function (event) {
                   var divs = document.getElementsByClassName("rowtab1");
                   for(var i = 0; i < divs.length; i++){
-                    console.log(event.min, event.max);
+                    let chartid = "selected-" + chart.replace(/\s/g, "");
 
-                    if(divs[i].id === 'tab1-' + this.chartid)
+                    var axis = event.target, visiblePoints = 0, abovecount = 0, belowcount = 0, withincount = 0;
+
+                    Highcharts.each(axis.series, function(ob, j) {
+                    Highcharts.each(ob.data, function(p, i) {
+                      if (p.x >= Math.round(event.min) && p.x <= Math.round(event.max)) {
+                        visiblePoints++;
+
+                          if(p.y > filteredRange[0]['Max Yellow']){
+                              abovecount++;
+                          }
+                          else if(p.y < filteredRange[0]['Min Yellow']) {
+                              belowcount++;
+                          }
+                          else {
+                              withincount++;
+                          }
+                        }
+                      });
+                    });
+
+                    if(visiblePoints < filteredData.length) {
+
+                      var abovepercent = (abovecount/visiblePoints*100).toFixed(2) + "%", belowpercent = (belowcount/visiblePoints*100).toFixed(2) + "%",
+                      withinpecent = (withincount/visiblePoints*100).toFixed(2) + "%";
+
+                      document.getElementById(chartid).innerHTML = "<b>Selected <br>"+ "above " +  abovepercent + "<br> within " + withinpecent + "<br> below " + belowpercent + "<b>" ;
+                    }
+                    if(divs[i].id === 'tab1-' + chartid)
                       continue;
 
                     var index = document.getElementById(divs[i].id).dataset.highchartsChart;
@@ -288,12 +312,12 @@ public addtoggle3series(seriesFinalData) {
 
           var datum1 = [];
           datum1.push(ele.startDate);
-          datum1.push(chartPartner.yAxis[0].dataMin);
-          datum1.push(chartPartner.yAxis[0].dataMax);
+          datum1.push(chartPartner.yAxis[0].min);
+          datum1.push(chartPartner.yAxis[0].max);
           var datum2 = [];
           datum2.push(ele.endDate)
-          datum2.push(chartPartner.yAxis[0].dataMin);
-          datum2.push(chartPartner.yAxis[0].dataMax);
+          datum2.push(chartPartner.yAxis[0].min);
+          datum2.push(chartPartner.yAxis[0].max);
           data.push(datum1);
           data.push(datum2);
 

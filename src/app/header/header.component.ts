@@ -7,7 +7,6 @@ import { Toggle2chartComponent } from '../tab1/toggle2chart/toggle2chart.compone
 import { Toggle3chartComponent } from '../tab1/toggle3chart/toggle3chart.component';
 import { Tab1chartComponent } from '../tab1/tab1chart/tab1chart.component';
 export interface DialogData {
-  animal: string;
   name: string;
 }
 @Component({
@@ -17,7 +16,6 @@ export interface DialogData {
 })
 
 export class HeaderComponent {
-  animal: string;
   name: string;
   @Input() activeTab: string;
   @Output() activeTabChanged = new EventEmitter<string>();
@@ -30,11 +28,9 @@ export class HeaderComponent {
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
       width: '1000px',
-      data: { name: this.name, animal: this.animal }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.animal = result;
     });
   }
 }
@@ -44,7 +40,6 @@ export class HeaderComponent {
   templateUrl: './dialog-overview-example-dialog.html',
 })
 export class DialogOverviewExampleDialog  {
-  animal: string = "hafiz ";
   name: string;
   XAxisMax = "";
   XAxisMin = "";

@@ -27,7 +27,7 @@
     <app-tab1chart [hidden]="splchart" *ngFor="let chart of mySelections" [chart]="chart" ></app-tab1chart>
     <app-tab1specialchart *ngIf="splchart"> </app-tab1specialchart>
 
-    <div class="row" *ngIf="!splchart">
+    <div class="row" *ngIf="toggle1 && !splchart">
         <mat-accordion>
             <mat-expansion-panel [expanded]="toggle1" disabled="true">
                 <app-toggle1chart></app-toggle1chart>

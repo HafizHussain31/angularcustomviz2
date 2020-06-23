@@ -17,21 +17,30 @@ noData(Highcharts);
   styleUrls: ['./toggle1chart.component.css']
 })
 export class Toggle1chartComponent implements OnInit {
-  public options: any = {
-  }
+
   constructor() { }
 
+  public options: any = {
+  }
+
   ngOnInit(): void {
+    let options: any = this.options;
     D3.csv('./assets/Toggle1.csv', (data) => {
-      let seriesData = [];
+      console.log(data);
+
+      var seriesData = [];
       data.forEach(element => {
-        let tmp = [new Date(element['Start Date'] + ' ' + element['Start Time']), 0];
+        let tmp = [(new Date(element['Start Date'] + ' ' + element['Start Time'])).getTime(), 0];
         seriesData.push(tmp);
       });
-      let options = {
+
+
+
+
+      let options: Highcharts.Options = {
         chart: {
           height: 120,
-          type: 'spline',
+          type: 'line',
           backgroundColor: 'transparent'
         },
         title: {
@@ -52,14 +61,6 @@ export class Toggle1chartComponent implements OnInit {
           max: 0,
           visible: false
         },
-        tooltip: {
-          headerFormat: '<table>',
-          pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' +
-            '<td style="padding:0"><b>{point.y:.1f} %</b></td></tr>',
-          footerFormat: '</table>',
-          shared: true,
-          useHTML: true
-        },
         plotOptions: {
           series: {
             marker: {
@@ -70,12 +71,13 @@ export class Toggle1chartComponent implements OnInit {
         colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
         series: [{
           name: "Winter 2014-2015",
-          data: seriesData
+          data: seriesData,
+          type: "line"
         }
         ]
       }
 
-      //Highcharts.chart('toggle1chart', options);
+      Highcharts.chart('toggle1chart2', options);
     })
   }
 
