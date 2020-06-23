@@ -298,7 +298,7 @@ public addtoggle3series(seriesFinalData) {
 
     var groupedata = this.groupBy(seriesFinalData, "Category");
     const catUnique = [...new Set(seriesFinalData.map(item => item['Category']))];
-
+    this.addtoggle3labels(groupedata);
   var chartseriesarr = [];
     for (let i = 0; i < Object.keys(groupedata).length; i++) {
       var color = D3.schemeCategory20
@@ -346,7 +346,136 @@ public addtoggle3series(seriesFinalData) {
 
 }
 
+public addtoggle3labels(groupedata) {
+
+
+var catUnique = Object.keys(groupedata);
+var catValues = Object.values(groupedata);
+var finaldata = [];
+console.log(catUnique);
+
+for (let i = 0; i < catUnique.length; i++) {
+
+  var datum = {
+      name : catUnique[i],
+      data : groupedata[catUnique[i]]
+  };
+  finaldata.push(datum);
+}
+console.log(finaldata);
+
+
+var color = D3.scaleOrdinal(D3.schemeCategory20);
+var svgtodelete = D3.select("#toggle3blocks");
+svgtodelete.selectAll("*").remove();
+  const svg = D3.select("#toggle3blocks").append('svg').attr('width', 500).attr('height', (catUnique.length / 7) * 100)
+              .attr("transform", "translate(50,0)");;
+
+              var bar = svg.selectAll("g")
+                  .data(finaldata)
+                .enter().append("g");
+
+              bar.append("rect")
+                  .attr("class", "bar")
+                  .attr("x", function(d, i) { return i * 150; })
+                  .attr("y", 0)
+                  .attr("width", 30)
+                  .style("fill", function(d, i) { return color(i);  } )
+                  .attr("height", 30)
+                  .on("mouseover", function(d){
+                    D3.select(this).style("cursor", "pointer");
+                    D3.select(this).style("fill", function() {
+                        return D3.rgb(D3.select(this).style("fill")).darker(0.4);
+                        });
+
+                  })
+                  .on("mouseout", function(d){
+                    D3.select(this).style("fill", function() {
+                        return D3.rgb(D3.select(this).style("fill")).darker(-0.4);
+                        });
+                  })
+                  .on("click", function(d) {
+                      console.log(d);
+
+                  });
+
+              bar.append("text")
+                  .attr("x", function(d, i) { return i * 150 + 40; })
+                  .attr("y", 20)
+                  .attr("fill", "#fff")
+                  .style("font-size", 16)
+                  .text(function(d) { return d.name; })
+                  .on("mouseover", function(d){
+                    D3.select(this).style("cursor", "pointer");
+                    D3.select(this).style("fill", function() {
+                        return D3.rgb(D3.select(this).style("fill")).darker(0.4);
+                        });
+                  })
+                  .on("mouseout", function(d){
+                    D3.select(this).style("fill", function() {
+                        return D3.rgb(D3.select(this).style("fill")).darker(-0.4);
+                        });
+                  })
+                  .on("click", this.clickevent);
+}
+
+public static selectedlabels = {};
+public clickevent(d, colorindex) {
+
+if(d.clicked === undefined)
+  d.clicked = false;
+
+Tab1chartComponent.selectedlabels[d.name + "_toggle3"] = d.clicked;
+
+  var divs = document.getElementsByClassName("rowtab1");
+
+  for(var i = 0; i < divs.length; i++){
+    var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+    var chartPartner = Highcharts.charts[index];
+    var seriesLength = chartPartner.series.length;
+
+                var seriestoberemoved = [];
+                for(var j = 0; j < seriesLength; j++)
+                {
+                    if(chartPartner.series[j].name.includes("toggle3")) {
+                      chartPartner.series[j].hide();
+                    }
+                }
+                for(var j = 0; j < seriesLength; j++)
+                {
+
+                    if(chartPartner.series[j].name === d.name + "_toggle3") {
+                        if(d.clicked === undefined || !d.clicked) {
+                            chartPartner.series[j].show();
+                            Tab1chartComponent.selectedlabels[d.name + "_toggle3"] = true;
+                          }
+                        else {
+                          chartPartner.series[j].hide();
+                          Tab1chartComponent.selectedlabels[d.name + "_toggle3"] = false;
+
+                        }
+                    }
+                    else {
+                          if(chartPartner.series[j].name.includes("toggle3")) {
+                              if(Tab1chartComponent.selectedlabels[chartPartner.series[j].name]) {
+                                chartPartner.series[j].show();
+                              }
+                              else {
+                                chartPartner.series[j].hide();
+                              }
+                        }
+                    }
+              }
+  }
+
+    d.clicked = !d.clicked;
+}
+
 public removetoggle3series() {
+
+  var svgtodelete = D3.select("#toggle3blocks");
+  svgtodelete.selectAll("*").remove();
+
   var divs = document.getElementsByClassName("rowtab1");
 
   for(var i = 0; i < divs.length; i++){
