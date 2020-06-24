@@ -52,6 +52,39 @@ export class Toggle3chartComponent implements OnInit {
           states = tmp;
         }
 
+
+        // if(Object.keys(Tab1chartComponent.selectedlabels).length > 0) {
+        //   var tmp =  states.filter(function (e) {
+        //           if(Tab1chartComponent.selectedlabels[e.Category + "_toggle3"] === undefined)
+        //             e.visible = false;
+        //           else
+        //             e.visible = Tab1chartComponent.selectedlabels[e.Category + "_toggle3"];
+        //           return true;
+        //   });
+        //
+        //   states = tmp;
+        // }
+
+        if(Object.keys(Tab1chartComponent.selectedlabels).length > 0) {
+          var tmp =  states.filter(function (e) {
+                  if(Tab1chartComponent.selectedlabels[e.Category + "_toggle3"] !== undefined) {
+                      if(Tab1chartComponent.selectedlabels[e.Category + "_toggle3"].clicked === undefined)
+                        return false;
+                      else
+                        return Tab1chartComponent.selectedlabels[e.Category + "_toggle3"].clicked;
+                  }
+                  else {
+                    return false;
+                  }
+                  //return true;
+          });
+
+          states = tmp;
+        }
+
+        console.log(states);
+
+
         function groupBy(xs, key) {
           return xs.reduce(function(rv, x) {
             (rv[x[key]] = rv[x[key]] || []).push(x);
@@ -84,7 +117,8 @@ export class Toggle3chartComponent implements OnInit {
 
                   // kind of https://s3.amazonaws.com/wordpress-production/wp-content/uploads/sites/15/2016/04/gantt-updated-dependencies-1024x578.png
 
-                  const prepareDataElement = ({ id, label, startDate, endDate, duration, dependsOn, Category }) => {
+                  const prepareDataElement = ({ id, label, startDate, endDate, duration, dependsOn, Category, visible }) => {
+
                     if ((!startDate || !endDate) && !duration) {
                       //throw new Exception('Wrong element format: should contain either startDate and duration, or endDate and duration or startDate and endDate');
                     }
@@ -116,22 +150,26 @@ export class Toggle3chartComponent implements OnInit {
                       endDate,
                       duration,
                       dependsOn,
-                      Category
+                      Category,
+                      visible
                     };
                   };
 
                   const findDateBoundaries = data => {
                     let minStartDate, maxEndDate;
 
-                    data.forEach(({ startDate, endDate }) => {
-                      if (!minStartDate || startDate < minStartDate) minStartDate = new Date(startDate);
+                    // data.forEach(({ startDate, endDate }) => {
+                    //   if (!minStartDate || startDate < minStartDate) minStartDate = new Date(startDate);
+                    //
+                    //   if (!minStartDate || endDate < minStartDate) minStartDate = new Date(endDate);
+                    //
+                    //   if (!maxEndDate || endDate > maxEndDate) maxEndDate = new Date(endDate);
+                    //
+                    //   if (!maxEndDate || startDate > maxEndDate) maxEndDate = new Date(startDate);
+                    // });
 
-                      if (!minStartDate || endDate < minStartDate) minStartDate = new Date(endDate);
-
-                      if (!maxEndDate || endDate > maxEndDate) maxEndDate = new Date(endDate);
-
-                      if (!maxEndDate || startDate > maxEndDate) maxEndDate = new Date(startDate);
-                    });
+                    minStartDate = new Date(Tab1chartComponent.minDate);
+                    maxEndDate = new Date(Tab1chartComponent.maxDate);
 
                     return {
                       minStartDate,
@@ -252,6 +290,7 @@ export class Toggle3chartComponent implements OnInit {
                       const width = xEnd - x;
                       const height = elementHeight;
                       const category = d.Category;
+                      const visible = d.visible;
 
                       const charWidth = (width / fontSize);
                       const dependsOn = d.dependsOn;
@@ -285,7 +324,8 @@ export class Toggle3chartComponent implements OnInit {
                         labelX,
                         labelY,
                         tooltip,
-                        category
+                        category,
+                        visible
                       };
                     });
 
@@ -364,6 +404,7 @@ export class Toggle3chartComponent implements OnInit {
                           let arr = groupBy(seriesFinalData, "Category")[d.category];
                           const catUnique = [...new Set(arr.map(item => item['label']))];
                           totalcatdatum.count = catUnique.length;
+                          totalcatdatum.visible = arr[0].visible;
                           console.log(totalcatdatum);
 
                           totalCat.push(totalcatdatum);
@@ -379,6 +420,7 @@ export class Toggle3chartComponent implements OnInit {
                           let arr = groupBy(seriesFinalData, "Category")[d.category];
                           const catUnique = [...new Set(arr.map(item => item['label']))];
                           totalcatdatum.count = catUnique.length;
+                          totalcatdatum.visible = arr[0].visible;
                           console.log(totalcatdatum);
                           totalCat.push(totalcatdatum);
                           catspace = nextlevelCat;
@@ -399,18 +441,48 @@ export class Toggle3chartComponent implements OnInit {
                      })
                       .attr('width', function(d) {
                        return d.width})
-                      .attr('height', d => d.height)
-                      .style('fill', function(d, i) {
-                        if(fillids[d.category] === undefined) {
-                          fillids[d.category] = color(i);
+                      .attr('height', function(d){
+                        if(d.visible === undefined)
+                            return d.height;
+                        else {
+                          if(d.visible) {
+                            return d.height;
+                          }
+                          else {
+                            return 0;
+                          }
                         }
-                       return fillids[d.category]  });
+                      })
+                      .style('fill', function(d, i) {
+                        // var curcolorcode = color(i);
+                        if(Tab1chartComponent.selectedlabels[d.category] !== undefined)
+                        {
+                          var tmpcolor = D3.schemeCategory20
+                          var curcolorcode = tmpcolor[Tab1chartComponent.selectedlabels[d.category].colorindex];
+                        }
 
-                       console.log(totalCat);
+                        if(fillids[d.category] === undefined) {
+
+                          if(Tab1chartComponent.selectedlabels[d.category + "_toggle3"] !== undefined)
+                          {
+                            var tmpcolor = D3.schemeCategory20
+                            fillids[d.category] = tmpcolor[Tab1chartComponent.selectedlabels[d.category + "_toggle3"].colorindex];
+                          }
+                          else {
+                             fillids[d.category] = color(i);
+                           }
+                        }
+                       return fillids[d.category]
+                     });
+
+                      console.log(totalCat);
+
+
                        let nextcatx = 0;
                        let nexttextx = 0;
                        for (let i = 0; i < totalCat.length; i++) {
                          const element = totalCat[i];
+                         console.log(element);
 
                          svg
                          .append('rect')
@@ -427,7 +499,18 @@ export class Toggle3chartComponent implements OnInit {
                          .attr('width', function(d) {
                           return scaleWidth + 120;
                         })
-                         .attr('height', 20)
+                        .attr('height', function(d){
+                          if(element.visible === undefined)
+                              return 20;
+                          else {
+                            if(element.visible) {
+                              return 20;
+                            }
+                            else {
+                              return 0;
+                            }
+                          }
+                        })
                          .style('fill', function(d) {
                            return fillids[element.category]
                          });
@@ -444,6 +527,18 @@ export class Toggle3chartComponent implements OnInit {
                            console.log(nexttextx);
 
                             return 65 + catx;
+                        })
+                        .attr('opacity', function(d){
+                          if(element.visible === undefined)
+                              return 1;
+                          else {
+                            if(element.visible) {
+                              return 1;
+                            }
+                            else {
+                              return 0;
+                            }
+                          }
                         })
                          .style('fill', function(d) {
                            return i % 2 === 0 ? "#fff" : "#000";
@@ -502,6 +597,18 @@ export class Toggle3chartComponent implements OnInit {
                         }
                        return ids[d.label] + catspace;
                       })
+                      .attr('opacity', function(d){
+                        if(d.visible === undefined)
+                            return 1;
+                        else {
+                          if(d.visible) {
+                            return 1;
+                          }
+                          else {
+                            return 0;
+                          }
+                        }
+                      })
                       .text(function(d) {
                        return d.label });
 
@@ -553,6 +660,18 @@ export class Toggle3chartComponent implements OnInit {
                           }
                          return ids[d.label] + catspace;
                         })
+                        .attr('opacity', function(d){
+                          if(d.visible === undefined)
+                              return 1;
+                          else {
+                            if(d.visible) {
+                              return 1;
+                            }
+                            else {
+                              return 0;
+                            }
+                          }
+                        })
                         .text(function(d) {
                             var fildata = data.filter(function(t) { return t.label === d.label})
 
@@ -582,6 +701,7 @@ export class Toggle3chartComponent implements OnInit {
                     if (!sortMode) sortMode = 'date';
 
                     if (typeof(showRelations) === 'undefined') showRelations = true;
+                    console.log(data);
 
                     data = parseUserData(data); // transform raw user data to valid values
                     console.log(data);
@@ -613,6 +733,8 @@ export class Toggle3chartComponent implements OnInit {
 
                   console.log(seriesFinalData);
 
+                  var svgtodelete = D3.select("#toggle3chart");
+                  svgtodelete.selectAll("*").remove();
 
                   createGanttChart(document.querySelector('body'), seriesFinalData, {
                     elementHeight: 20,
@@ -625,9 +747,10 @@ export class Toggle3chartComponent implements OnInit {
                     }
                   });
 
-
-                  let tabchart1comp = new Tab1chartComponent();
-                  tabchart1comp.addtoggle3series(states);
+                  if(Object.keys(Tab1chartComponent.selectedlabels).length === 0) {
+                      let tabchart1comp = new Tab1chartComponent();
+                      tabchart1comp.addtoggle3series(states);
+                  }
 
     });
 
@@ -635,6 +758,8 @@ export class Toggle3chartComponent implements OnInit {
 
 
   public chartinterval(data){
+    console.log(Tab1chartComponent.selectedlabels);
+
     this.filteredData = data;
     this.ngOnInit();
 

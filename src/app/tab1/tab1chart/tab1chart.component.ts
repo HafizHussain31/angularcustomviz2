@@ -6,6 +6,7 @@ declare var require: any;
 let Boost = require('highcharts/modules/boost');
 let noData = require('highcharts/modules/no-data-to-display');
 let More = require('highcharts/highcharts-more');
+import { Toggle3chartComponent } from '../toggle3chart/toggle3chart.component';
 
 Boost(Highcharts);
 noData(Highcharts);
@@ -46,6 +47,10 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
 
   }
+
+  public static minDate = 0;
+  public static maxDate = 0;
+
   ngOnInit() {
     let chart: string = this.chart;
     let chartid: string = this.chartid;
@@ -66,12 +71,18 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
           })
           let filteredRange = rangeData.filter(d => d['Replacement '] == selectedChart);
           let seriesData = [];
+
           filteredData.forEach(function (d) {
             let tmp = [];
             tmp[0] = new Date(d['Date'] + ' ' + d['Time']).getTime();
             tmp[1] = parseFloat(d['Value']);
             seriesData.push(tmp);
           })
+
+          var xAxisdates = filteredData.map(function(d){return new Date(d['Date'] + ' ' + d['Time']).getTime()});
+
+          Tab1chartComponent.maxDate = Math.max(...xAxisdates);
+          Tab1chartComponent.minDate = Math.min(...xAxisdates);
 
           let abovedata = (filteredData.filter(word => word['Value'] > filteredRange[0]['Max Yellow']).length / filteredData.length) * 100;
           let belowdata = (filteredData.filter(word => word['Value'] < filteredRange[0]['Min Yellow']).length / filteredData.length) * 100;
@@ -127,6 +138,7 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
             xAxis: {
               type: 'datetime',
               opposite:true,
+              offset: 0,
               events: {
                 afterSetExtremes: function (event) {
                   var divs = document.getElementsByClassName("rowtab1");
@@ -174,7 +186,9 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
             yAxis: {
               title: {
                 text: 'Exchange rate'
-              }
+              },
+              maxPadding : 0,
+              min:0
             },
             legend: {
               enabled: false
@@ -309,15 +323,16 @@ public addtoggle3series(seriesFinalData) {
         for (let j = 0; j < currentarr.length; j++) {
           var ele = currentarr[j];
           var data = [];
+          console.log(chartPartner.yAxis[0]);
 
           var datum1 = [];
           datum1.push(ele.startDate);
-          datum1.push(chartPartner.yAxis[0].min);
-          datum1.push(chartPartner.yAxis[0].max);
+          datum1.push(chartPartner.yAxis[0].dataMin);
+          datum1.push(chartPartner.yAxis[0].dataMax);
           var datum2 = [];
           datum2.push(ele.endDate)
-          datum2.push(chartPartner.yAxis[0].min);
-          datum2.push(chartPartner.yAxis[0].max);
+          datum2.push(chartPartner.yAxis[0].dataMin);
+          datum2.push(chartPartner.yAxis[0].dataMax);
           data.push(datum1);
           data.push(datum2);
 
@@ -368,7 +383,8 @@ console.log(finaldata);
 var color = D3.scaleOrdinal(D3.schemeCategory20);
 var svgtodelete = D3.select("#toggle3blocks");
 svgtodelete.selectAll("*").remove();
-  const svg = D3.select("#toggle3blocks").append('svg').attr('width', 500).attr('height', (catUnique.length / 7) * 100)
+var height = 50;
+  const svg = D3.select("#toggle3blocks").append('svg').attr('width', 500).attr('height', height)
               .attr("transform", "translate(50,0)");;
 
               var bar = svg.selectAll("g")
@@ -377,8 +393,8 @@ svgtodelete.selectAll("*").remove();
 
               bar.append("rect")
                   .attr("class", "bar")
-                  .attr("x", function(d, i) { return i * 150; })
-                  .attr("y", 0)
+                  .attr("x", function(d, i) { return i * 150 + 10; })
+                  .attr("y", 10)
                   .attr("width", 30)
                   .style("fill", function(d, i) { return color(i);  } )
                   .attr("height", 30)
@@ -387,7 +403,6 @@ svgtodelete.selectAll("*").remove();
                     D3.select(this).style("fill", function() {
                         return D3.rgb(D3.select(this).style("fill")).darker(0.4);
                         });
-
                   })
                   .on("mouseout", function(d){
                     D3.select(this).style("fill", function() {
@@ -399,9 +414,21 @@ svgtodelete.selectAll("*").remove();
 
                   });
 
+                  bar.append("rect")
+                      .attr("class", "selectedbar")
+                      .attr("id", function(d, i) { return "selectedbar" + i })
+                      .attr("x", function(d, i) { return i * 150; })
+                      .attr("y", 0)
+                      .attr("width", 120)
+                      .style("stroke", function(d, i) { return color(i);  } )
+                      .style("stroke-width", 1)
+                      .style("fill", "transparent")
+                      .attr("height", 50)
+                      .style("opacity", 0);
+
               bar.append("text")
-                  .attr("x", function(d, i) { return i * 150 + 40; })
-                  .attr("y", 20)
+                  .attr("x", function(d, i) { return i * 150 + 50; })
+                  .attr("y", 30)
                   .attr("fill", "#fff")
                   .style("font-size", 16)
                   .text(function(d) { return d.name; })
@@ -417,6 +444,50 @@ svgtodelete.selectAll("*").remove();
                         });
                   })
                   .on("click", this.clickevent);
+
+                  svg.append("text")
+                  .attr("x", catUnique.length * 150)
+                  .attr("y", 30)
+                  .attr("fill", "steelblue")
+                  .style("font-size", 16)
+                  .text(function(d) { return "See all" })
+                  .on("mouseover", function(d){
+                    D3.select(this).style("cursor", "pointer");
+                    D3.select(this).style("fill", function() {
+                        return D3.rgb(D3.select(this).style("fill")).darker(0.4);
+                        });
+                  })
+                  .on("mouseout", function(d){
+                    D3.select(this).style("fill", function() {
+                        return D3.rgb(D3.select(this).style("fill")).darker(-0.4);
+                        });
+                  })
+                  .on("click", this.seealltoggle3labels);
+}
+
+public seealltoggle3labels() {
+
+  Tab1chartComponent.selectedlabels = {};
+
+    var divs = document.getElementsByClassName("rowtab1");
+
+  for(var i = 0; i < divs.length; i++){
+    var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+    var chartPartner = Highcharts.charts[index];
+    var seriesLength = chartPartner.series.length;
+
+                var seriestoberemoved = [];
+                for(var j = 0; j < seriesLength; j++)
+                {
+                    if(chartPartner.series[j].name.includes("toggle3")) {
+                      chartPartner.series[j].show();
+                    }
+                }
+  }
+
+  let toggle3comp = new Toggle3chartComponent();
+  let undefineddata;
+  toggle3comp.chartinterval(undefineddata);
 }
 
 public static selectedlabels = {};
@@ -425,7 +496,10 @@ public clickevent(d, colorindex) {
 if(d.clicked === undefined)
   d.clicked = false;
 
-Tab1chartComponent.selectedlabels[d.name + "_toggle3"] = d.clicked;
+
+Tab1chartComponent.selectedlabels[d.name + "_toggle3"] = {}
+Tab1chartComponent.selectedlabels[d.name + "_toggle3"].colorindex = colorindex;
+Tab1chartComponent.selectedlabels[d.name + "_toggle3"].clicked = d.clicked;
 
   var divs = document.getElementsByClassName("rowtab1");
 
@@ -447,17 +521,23 @@ Tab1chartComponent.selectedlabels[d.name + "_toggle3"] = d.clicked;
                     if(chartPartner.series[j].name === d.name + "_toggle3") {
                         if(d.clicked === undefined || !d.clicked) {
                             chartPartner.series[j].show();
-                            Tab1chartComponent.selectedlabels[d.name + "_toggle3"] = true;
+
+
+                            Tab1chartComponent.selectedlabels[d.name + "_toggle3"].clicked = true;
+                            D3.select("#selectedbar" + colorindex).style("opacity", 1);
                           }
                         else {
                           chartPartner.series[j].hide();
-                          Tab1chartComponent.selectedlabels[d.name + "_toggle3"] = false;
+                          Tab1chartComponent.selectedlabels[d.name + "_toggle3"].clicked = false;
+                          D3.select("#selectedbar" + colorindex).style("opacity", 0);
 
                         }
                     }
                     else {
                           if(chartPartner.series[j].name.includes("toggle3")) {
-                              if(Tab1chartComponent.selectedlabels[chartPartner.series[j].name]) {
+                            console.log(Tab1chartComponent.selectedlabels);
+                              if(Tab1chartComponent.selectedlabels[chartPartner.series[j].name] !== undefined &&
+                                Tab1chartComponent.selectedlabels[chartPartner.series[j].name].clicked) {
                                 chartPartner.series[j].show();
                               }
                               else {
@@ -469,6 +549,17 @@ Tab1chartComponent.selectedlabels[d.name + "_toggle3"] = d.clicked;
   }
 
     d.clicked = !d.clicked;
+
+    let toggle3comp = new Toggle3chartComponent();
+    let undefineddata;
+    toggle3comp.chartinterval(undefineddata);
+
+
+
+}
+
+public filtertoggle3chart(){
+
 }
 
 public removetoggle3series() {

@@ -45,7 +45,7 @@ export class Tab1Component implements OnInit {
       if(!event.checked) {
         let tab1chart = new Tab1chartComponent();
         tab1chart.removetoggle3series();
-
+        Tab1chartComponent.selectedlabels = {};
       }
 
   }
