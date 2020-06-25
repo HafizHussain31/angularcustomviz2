@@ -762,6 +762,9 @@ export class Toggle3chartComponent implements OnInit {
                     }
                   });
 
+                  console.log(Tab1chartComponent.actualMinDate, Tab1chartComponent.minDate);
+
+
                   if(Object.keys(Tab1chartComponent.selectedlabels).length === 0) {
                       let tabchart1comp = new Tab1chartComponent();
                       tabchart1comp.addtoggle3series(states);

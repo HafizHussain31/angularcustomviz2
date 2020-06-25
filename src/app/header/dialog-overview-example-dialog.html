@@ -1,21 +1,22 @@
-<div class="modal-body">
+<div class="modal-body" >
   <div class="pophead">
-    <span  class="close">&times;</span>
     <p id="header">Set Chart Min/Max</p>
-    <a (click)='restoredefault()'>Reset to default</a>
+    <a style="color:#62A3F5;cursor: pointer;" (click)='restoredefault()'>Reset to default</a> <br>
   </div>
   <div class="xaxis">
-    <label><b>X-axis:</b></label><br><br>
+    <br>
+    <label><b>X-axis:</b></label><br>
     <label>Min:<input type="datetime-local" [(ngModel)]="XAxisMin" ></label>
     <label style="margin-left: 30px;">Max:<input type="datetime-local" [(ngModel)]="XAxisMax" ></label><br><br>
-    <label><b>Y-axis:</b></label><br><br>
+    <label><b>Y-axis:</b></label><br>
     <label>Min:<input type="number" [(ngModel)]="YAxisMin"></label>
-    <label style="margin-left: 50px;">Max:<input type="number" [(ngModel)]="YAxisMax"></label>
+    <label style="margin-left: 50px;">Max:<input type="number" [(ngModel)]="YAxisMax"></label><br>
   </div>
   <div class="footerbtn">
-    <div class="innerfooter">
+    <div class="innerfooter" style="margin-left:200px;">
+      <br>
       <button id="cancel" >Cancel</button>
-      <button id="apply" style="margin-left: 50px;" (click)='onClickApply()'>Apply</button>
+      <button id="apply" style="margin-left:50px;background-color:#62A3F5;color:#fff" (click)='onClickApply()'>Apply</button>
     </div>
   </div>
 

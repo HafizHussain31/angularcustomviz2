@@ -53,12 +53,14 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
 
   public static minDate = 0;
   public static maxDate = 0;
+  public static actualMinDate = 0;
+  public static actualMaxDate = 0;
   public static yMax = 6;
   public static yMin = 1;
 
   ngOnInit() {
 
-    
+
 
 
     let chart: string = this.chart;
@@ -92,6 +94,9 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
 
           Tab1chartComponent.maxDate = Math.max(...xAxisdates);
           Tab1chartComponent.minDate = Math.min(...xAxisdates);
+
+          Tab1chartComponent.actualMaxDate = Math.max(...xAxisdates);
+          Tab1chartComponent.actualMinDate = Math.min(...xAxisdates);
 
           let abovedata = (filteredData.filter(word => word['Value'] > filteredRange[0]['Max Yellow']).length / filteredData.length) * 100;
           let belowdata = (filteredData.filter(word => word['Value'] < filteredRange[0]['Min Yellow']).length / filteredData.length) * 100;
@@ -133,7 +138,9 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
           options = {
             chart: {
               zoomType: 'x',
-              backgroundColor: '#040A17'
+              backgroundColor: '#040A17',
+              panning: true,
+              panKey: 'shift'
             },
             title: {
               text: ''
@@ -154,8 +161,8 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
                   Tab1chartComponent.minDate = event.min;
                   var divs = document.getElementsByClassName("rowtab1");
                   for(var i = 0; i < divs.length; i++){
-                        let chartid = "selected-" + chart.replace(/\s/g, "");
-
+                        let selectedchartid = "selected-" + chart.replace(/\s/g, "");
+                        let chartid = chart.replace(/\s/g, "");
                         var axis = event.target, visiblePoints = 0, abovecount = 0, belowcount = 0, withincount = 0;
 
                         Highcharts.each(axis.series, function(ob, j) {
@@ -181,10 +188,15 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
                           var abovepercent = (abovecount/visiblePoints*100).toFixed(2) + "%", belowpercent = (belowcount/visiblePoints*100).toFixed(2) + "%",
                           withinpecent = (withincount/visiblePoints*100).toFixed(2) + "%";
 
-                          document.getElementById(chartid).innerHTML = "<b>Selected <br>"+ "above " +  abovepercent + "<br> within " + withinpecent + "<br> below " + belowpercent + "<b>" ;
+                          document.getElementById(selectedchartid).innerHTML = "<b>Selected <br>"+ "above " +  abovepercent + "<br> within " + withinpecent + "<br> below " + belowpercent + "<b>" ;
                         }
-                        if(divs[i].id === 'tab1-' + chartid)
+
+                        console.log(divs[i].id, chartid);
+
+                        if(divs[i].id === 'tab1-' + chartid) {
                           continue;
+                        }
+
 
                         var index = document.getElementById(divs[i].id).dataset.highchartsChart;
                         var chartPartner = Highcharts.charts[index];
@@ -336,6 +348,18 @@ public groupBy(xs, key) {
 public addtoggle3series(seriesFinalData) {
 
   var divs = document.getElementsByClassName("rowtab1");
+
+  var index = document.getElementById(divs[0].id).dataset.highchartsChart;
+  var chartPartner = Highcharts.charts[index];
+
+  var seriesLength = chartPartner.series.length;
+
+  for(var j = 0; j < seriesLength; j++)
+  {
+      if(chartPartner.series[j].name.includes("toggle3")) {
+        return;
+      }
+  }
 
   for(var i = 0; i < divs.length; i++){
     var index = document.getElementById(divs[i].id).dataset.highchartsChart;

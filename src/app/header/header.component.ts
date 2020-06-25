@@ -27,7 +27,7 @@ export class HeaderComponent {
   }
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-      width: '1000px',
+      width: '700px',
     });
 
     dialogRef.afterClosed().subscribe(result => {
