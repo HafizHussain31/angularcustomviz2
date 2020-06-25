@@ -19,6 +19,7 @@ export class Tab1Component implements OnInit {
   toggle4: boolean;
   toggle5: boolean;
   splchart: boolean = false;
+  @ViewChild('chartselect') chartselect:any;
 
   constructor() {
     this.bindData();
@@ -64,13 +65,16 @@ Tab1Component.toggle2Checked = event.checked;
 
   changed() {
     if (this.charts.value.length < 5) {
+      this.mySelections = this.charts.value;
       if(this.charts.value.includes('Special')) {
+        this.chartselect.close();
+        this.charts.setValue(['Special']);
         this.splchart = true;
       }
       else {
+          this.charts.setValue(this.mySelections);
           this.splchart = false;
       }
-      this.mySelections = this.charts.value;
     } else {
       this.charts.setValue(this.mySelections);
     }

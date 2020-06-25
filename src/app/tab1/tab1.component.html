@@ -3,7 +3,7 @@
 
     <div class="row">
         <mat-form-field>
-            <mat-select [formControl]="charts" multiple (selectionChange)="changed()">
+            <mat-select [formControl]="charts" multiple (selectionChange)="changed()" #chartselect>
                 <mat-option *ngFor="let chart of chartsList" [value]="chart">{{chart}}</mat-option>
             </mat-select>
         </mat-form-field>

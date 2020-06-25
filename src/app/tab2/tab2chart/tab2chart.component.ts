@@ -52,16 +52,20 @@ export class Tab2chartComponent implements OnInit {
         let tmpdata = [];
 
         filteredData.forEach(filtereddatum => {
-          let min = filtereddatum["Date Time"].split(':')[0];
-          let sec = filtereddatum["Date Time"].split(':')[1].split(".")[0];
-          let ms = parseInt(filtereddatum["Date Time"].split(':')[1].split(".")[1]) * 100;
-          console.log(new Date(0,0,0,0, min, sec, ms));
 
-          filtereddatum["DateTime"] = new Date(0,0,0,0, min - 38, sec, ms).getTime();
-          let tempdatum = [];
-          tempdatum.push(filtereddatum["DateTime"]);
-          tempdatum.push(parseFloat(filtereddatum[chart]));
-          tmpdata.push(tempdatum);
+          if(filtereddatum[chart] !== '') {
+
+              let min = filtereddatum["Date Time"].split(':')[0];
+              let sec = filtereddatum["Date Time"].split(':')[1].split(".")[0];
+              let ms = parseInt(filtereddatum["Date Time"].split(':')[1].split(".")[1]) * 100;
+              console.log(min, sec, ms);
+
+              filtereddatum["DateTime"] = new Date().getTime() + new Date(0,0,0,0, min, sec, ms).getTime();
+              let tempdatum = [];
+              tempdatum.push(filtereddatum["DateTime"]);
+              tempdatum.push(parseFloat(filtereddatum[chart]));
+              tmpdata.push(tempdatum);
+          }
         });
 
         tmp['data'] = tmpdata;
