@@ -81,4 +81,13 @@ export class Toggle1chartComponent implements OnInit {
     })
   }
 
+public chartinterval(data){
+
+  var index = document.getElementById('toggle1chart2').dataset.highchartsChart;
+  var chartPartner = Highcharts.charts[index];
+  chartPartner.xAxis[0].setExtremes(data.xAxisMin, data.xAxisMax);
+  chartPartner.showResetZoom();
+
+
+}
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, OnDestroy } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { ganttChart } from 'highcharts/highcharts-gantt';
+import { Tab1chartComponent } from '../tab1chart/tab1chart.component';
 import * as D3 from 'd3v4';
 
 declare var require: any;
@@ -59,14 +60,8 @@ export class Toggle2chartComponent implements OnInit {
 
 
 
-      if(this.filteredData !== undefined) {
-        for (let i = 0; i < states.length; i++) {
-          var tmp =  states[i].deals.filter(function (e) {
-                  return e.from >= this.filteredData.xAxisMin && e.to <= this.filteredData.xAxisMax;
-          });
-          states[i].deals = tmp;
-        }
-      }
+
+      console.log(states);
 
       series = states.map(function (car, i) {
         let model = car.model;
@@ -86,9 +81,25 @@ export class Toggle2chartComponent implements OnInit {
         return {
           name: car.model,
           data: data
-          // current: car.deals[car.current]
         };
       });
+
+      let filterminmax = this.filteredData;
+      let filteredseries = [];
+      if(filterminmax !== undefined) {
+        for (let i = 0; i < series.length; i++) {
+          var tmp =  series[i].data.filter(function (e) {
+                  return e.startDate >= filterminmax.xAxisMin && e.endDate <= filterminmax.xAxisMax;
+          });
+          let seriesdatum = states[i];
+          seriesdatum.deals = tmp
+          filteredseries.push(seriesdatum);
+        }
+      }
+
+      console.log(series);
+      console.log(filteredseries);
+
 
 
     // kind of https://s3.amazonaws.com/wordpress-production/wp-content/uploads/sites/15/2016/04/gantt-updated-dependencies-1024x578.png
@@ -131,15 +142,18 @@ export class Toggle2chartComponent implements OnInit {
     const findDateBoundaries = data => {
       let minStartDate, maxEndDate;
 
-      data.forEach(({ startDate, endDate }) => {
-        if (!minStartDate || startDate < minStartDate) minStartDate = new Date(startDate);
+      // data.forEach(({ startDate, endDate }) => {
+      //   if (!minStartDate || startDate < minStartDate) minStartDate = new Date(startDate);
+      //
+      //   if (!minStartDate || endDate < minStartDate) minStartDate = new Date(endDate);
+      //
+      //   if (!maxEndDate || endDate > maxEndDate) maxEndDate = new Date(endDate);
+      //
+      //   if (!maxEndDate || startDate > maxEndDate) maxEndDate = new Date(startDate);
+      // });
 
-        if (!minStartDate || endDate < minStartDate) minStartDate = new Date(endDate);
-
-        if (!maxEndDate || endDate > maxEndDate) maxEndDate = new Date(endDate);
-
-        if (!maxEndDate || startDate > maxEndDate) maxEndDate = new Date(startDate);
-      });
+      minStartDate = new Date(Tab1chartComponent.minDate);
+      maxEndDate = new Date(Tab1chartComponent.maxDate);
 
       return {
         minStartDate,
@@ -290,7 +304,7 @@ export class Toggle2chartComponent implements OnInit {
 
       const xScale = D3.scaleTime()
         .domain([minStartDate, maxEndDate])
-        .range([0, scaleWidth]);
+        .range([0, svgWidth - 100]);
 
       // prepare data for every data element
       const rectangleData = createElementData(data, elementHeight, xScale, fontSize);
@@ -301,7 +315,7 @@ export class Toggle2chartComponent implements OnInit {
       const xAxis = D3.axisBottom(xScale);
 
       // create container for the data
-      const g1 = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+      const g1 = svg.append('g').attr('transform', `translate(70,${margin.top})`);
 
       const linesContainer = g1.append('g').attr('transform', `translate(0,${margin.top})`);
       const barsContainer = g1.append('g').attr('transform', `translate(0,${margin.top})`);
@@ -338,14 +352,21 @@ export class Toggle2chartComponent implements OnInit {
 
       bars
         .append('rect')
-        .attr('x', d => d.x)
+        .attr('x', d => Math.max(0, d.x))
         .attr('y', function(d) {
           if(ids[d.id] === undefined) {
             ids[d.id] = d.y;
             return d.y;
           }
          return ids[d.id]; })
-        .attr('width', d => d.width)
+        .attr('width', function(d) {
+            if(d.x >= 0) {
+              return d.width;
+            }
+            else {
+              return d.width + d.x;
+            }
+        })
         .attr('height', d => d.height)
         .style('fill', '#F3D849')
         .style('stroke', 'black');
@@ -448,6 +469,10 @@ export class Toggle2chartComponent implements OnInit {
 
       for (let j = 0; j < series[index].data.length; j++) {
         seriesFinalData.push(series[index].data[j]);
+      }
+
+      if(series[index].data.length === 0) {
+        seriesFinalData.push(series[index]);
       }
     }
 

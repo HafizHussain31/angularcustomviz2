@@ -40,14 +40,26 @@ export class Tab1Component implements OnInit {
 
   }
 
-  onToggle(event) {
+public static toggle1Checked = false;
+public static toggle2Checked = false;
+public static toggle3Checked = false;
 
+  onToggle3(event) {
+Tab1Component.toggle3Checked = event.checked;
       if(!event.checked) {
         let tab1chart = new Tab1chartComponent();
         tab1chart.removetoggle3series();
         Tab1chartComponent.selectedlabels = {};
       }
 
+  }
+
+  onToggle2(event) {
+Tab1Component.toggle2Checked = event.checked;
+  }
+
+  onToggle1(event) {
+      Tab1Component.toggle1Checked = event.checked;
   }
 
   changed() {

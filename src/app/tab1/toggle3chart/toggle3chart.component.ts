@@ -44,13 +44,13 @@ export class Toggle3chartComponent implements OnInit {
 
         console.log(states);
 
-        if(this.filteredData !== undefined) {
-          var tmp =  states.filter(function (e) {
-                  return e.startDate >= this.filteredData.xAxisMin && e.endDate <= this.filteredData.xAxisMax;
-          });
-
-          states = tmp;
-        }
+        // if(this.filteredData !== undefined) {
+        //   var tmp =  states.filter(function (e) {
+        //           return e.startDate >= this.filteredData.xAxisMin && e.endDate <= this.filteredData.xAxisMax;
+        //   });
+        //
+        //   states = tmp;
+        // }
 
 
         // if(Object.keys(Tab1chartComponent.selectedlabels).length > 0) {
@@ -386,10 +386,19 @@ export class Toggle3chartComponent implements OnInit {
                     let prevCat = "";
                     let nextlevelCat = 0;
                     var totalCat = [];
-
+                    var catwithval = [];
                     bars
                       .append('rect')
-                      .attr('x', d => d.x)
+                      .attr('x', function(d) {
+
+                        if(d.x > 0 && d.x < scaleWidth)
+                        {
+                          if(!catwithval.includes(d.category))
+                          catwithval.push(d.category);
+                        }
+
+                        return d.x;
+                      })
                       .attr('y', function(d) {
 
                         let catspace = 0;
@@ -484,11 +493,17 @@ export class Toggle3chartComponent implements OnInit {
                          const element = totalCat[i];
                          console.log(element);
 
+                         let opacity = 0.5;
+
+                         if(catwithval.includes(element.category))
+                            opacity = 1;
+
                          svg
                          .append('rect')
                          .attr('x', 0)
                          .attr('rx', 10)
                          .attr('ry', 10)
+                         .attr('id', element.category)
                          .attr('y', function(d) {
                            let catx = nextcatx;
                            nextcatx += (element.count * 45);
@@ -513,7 +528,8 @@ export class Toggle3chartComponent implements OnInit {
                         })
                          .style('fill', function(d) {
                            return fillids[element.category]
-                         });
+                         })
+                         .style('opacity', opacity);
 
                          svg.attr('height', nextcatx + 80);
 
@@ -543,11 +559,10 @@ export class Toggle3chartComponent implements OnInit {
                          .style('fill', function(d) {
                            return i % 2 === 0 ? "#fff" : "#000";
                          }).text(function(d) {
-                          return element.category });
+                          return element.category })
+                          .style('opacity', opacity);
 
                        }
-
-
                       var distinctstage = [];
                       ids = {}
                       nextlevel = 0;

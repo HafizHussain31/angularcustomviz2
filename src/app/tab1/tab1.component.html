@@ -7,13 +7,13 @@
                 <mat-option *ngFor="let chart of chartsList" [value]="chart">{{chart}}</mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle1" *ngIf="!splchart">
+        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle1" *ngIf="!splchart" (change)="onToggle1($event)">
             Toggle 1
         </mat-slide-toggle>
-        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle2" *ngIf="!splchart">
+        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle2" *ngIf="!splchart" (change)="onToggle2($event)">
             Toggle 2
         </mat-slide-toggle>
-        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle3" *ngIf="!splchart" (change)="onToggle($event)">
+        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle3" *ngIf="!splchart" (change)="onToggle3($event)">
             Toggle 3
         </mat-slide-toggle>
         <mat-slide-toggle class="example-margin" [(ngModel)]="toggle4" *ngIf="!splchart">

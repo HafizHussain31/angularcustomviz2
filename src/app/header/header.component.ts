@@ -41,25 +41,37 @@ export class HeaderComponent {
 })
 export class DialogOverviewExampleDialog  {
   name: string;
-  XAxisMax = "";
-  XAxisMin = "";
-  YAxisMax = "";
-  YAxisMin = "";
+  XAxisMin = ''
+  XAxisMax = ''
+  YAxisMax : number;
+  YAxisMin : number;
   constructor(
     public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
+ngOnInit(): void {
+  this.XAxisMin = new Date(Tab1chartComponent.minDate).toISOString().slice(0, 16);
+  this.XAxisMax = new Date(Tab1chartComponent.maxDate).toISOString().slice(0, 16);
+  this.YAxisMax = Tab1chartComponent.yMax;
+  this.YAxisMin = Tab1chartComponent.yMin;
+}
 
   onCancelClick(): void {
     this.dialogRef.close();
   }
 
   restoredefault(): void {
+    let tabchart1comp = new Tab1chartComponent();
+    tabchart1comp.resetzoom();
+    this.dialogRef.close();
   }
 
 
   onClickApply(): void {
     console.log(this.XAxisMax, this.XAxisMin, this.YAxisMax, this.YAxisMin);
+
+    Tab1chartComponent.yMax = this.YAxisMax;
+    Tab1chartComponent.yMin = this.YAxisMin;
 
     var data = {
       xAxisMax: new Date(this.XAxisMax).getTime(),
@@ -67,13 +79,11 @@ export class DialogOverviewExampleDialog  {
       yAxisMax: this.YAxisMax,
       yAxisMin: this.YAxisMin
     };
-    let toggle2comp = new Toggle2chartComponent();
-    let toggle3comp = new Toggle3chartComponent();
+
     let tabchart1comp = new Tab1chartComponent();
 
-    toggle2comp.chartinterval(data);
-    toggle3comp.chartinterval(data);
-    tabchart1comp.setinterval(new Date(this.XAxisMin).getTime(), new Date(this.XAxisMax).getTime(), this.YAxisMin, this.YAxisMax);
+
+    tabchart1comp.setintervalfrompopup(new Date(this.XAxisMin).getTime(), new Date(this.XAxisMax).getTime(), this.YAxisMin, this.YAxisMax);
 
 
     this.dialogRef.close();

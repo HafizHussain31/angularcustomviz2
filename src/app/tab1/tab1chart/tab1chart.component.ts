@@ -7,6 +7,9 @@ let Boost = require('highcharts/modules/boost');
 let noData = require('highcharts/modules/no-data-to-display');
 let More = require('highcharts/highcharts-more');
 import { Toggle3chartComponent } from '../toggle3chart/toggle3chart.component';
+import { Toggle2chartComponent } from '../toggle2chart/toggle2chart.component';
+import { Toggle1chartComponent } from '../toggle1chart/toggle1chart.component';
+import { Tab1Component } from '../tab1.component';
 
 Boost(Highcharts);
 noData(Highcharts);
@@ -50,8 +53,14 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
 
   public static minDate = 0;
   public static maxDate = 0;
+  public static yMax = 6;
+  public static yMin = 1;
 
   ngOnInit() {
+
+    
+
+
     let chart: string = this.chart;
     let chartid: string = this.chartid;
     let options: any = this.options;
@@ -141,44 +150,68 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
               offset: 0,
               events: {
                 afterSetExtremes: function (event) {
+                  Tab1chartComponent.maxDate = event.max;
+                  Tab1chartComponent.minDate = event.min;
                   var divs = document.getElementsByClassName("rowtab1");
                   for(var i = 0; i < divs.length; i++){
-                    let chartid = "selected-" + chart.replace(/\s/g, "");
+                        let chartid = "selected-" + chart.replace(/\s/g, "");
 
-                    var axis = event.target, visiblePoints = 0, abovecount = 0, belowcount = 0, withincount = 0;
+                        var axis = event.target, visiblePoints = 0, abovecount = 0, belowcount = 0, withincount = 0;
 
-                    Highcharts.each(axis.series, function(ob, j) {
-                    Highcharts.each(ob.data, function(p, i) {
-                      if (p.x >= Math.round(event.min) && p.x <= Math.round(event.max)) {
-                        visiblePoints++;
+                        Highcharts.each(axis.series, function(ob, j) {
+                        Highcharts.each(ob.data, function(p, i) {
+                          if (p.x >= Math.round(event.min) && p.x <= Math.round(event.max)) {
+                            visiblePoints++;
 
-                          if(p.y > filteredRange[0]['Max Yellow']){
-                              abovecount++;
-                          }
-                          else if(p.y < filteredRange[0]['Min Yellow']) {
-                              belowcount++;
-                          }
-                          else {
-                              withincount++;
-                          }
+                              if(p.y > filteredRange[0]['Max Yellow']){
+                                  abovecount++;
+                              }
+                              else if(p.y < filteredRange[0]['Min Yellow']) {
+                                  belowcount++;
+                              }
+                              else {
+                                  withincount++;
+                              }
+                            }
+                          });
+                        });
+
+                        if(visiblePoints < filteredData.length) {
+
+                          var abovepercent = (abovecount/visiblePoints*100).toFixed(2) + "%", belowpercent = (belowcount/visiblePoints*100).toFixed(2) + "%",
+                          withinpecent = (withincount/visiblePoints*100).toFixed(2) + "%";
+
+                          document.getElementById(chartid).innerHTML = "<b>Selected <br>"+ "above " +  abovepercent + "<br> within " + withinpecent + "<br> below " + belowpercent + "<b>" ;
                         }
-                      });
-                    });
+                        if(divs[i].id === 'tab1-' + chartid)
+                          continue;
 
-                    if(visiblePoints < filteredData.length) {
+                        var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+                        var chartPartner = Highcharts.charts[index];
+                        chartPartner.xAxis[0].setExtremes(event.min, event.max);
+                        chartPartner.showResetZoom();
+                  }
 
-                      var abovepercent = (abovecount/visiblePoints*100).toFixed(2) + "%", belowpercent = (belowcount/visiblePoints*100).toFixed(2) + "%",
-                      withinpecent = (withincount/visiblePoints*100).toFixed(2) + "%";
+                  var minmaxdata = {
+                    xAxisMax: event.max,
+                    xAxisMin: event.min,
+                    yAxisMax: 0,
+                    yAxisMin: 0
+                  };
 
-                      document.getElementById(chartid).innerHTML = "<b>Selected <br>"+ "above " +  abovepercent + "<br> within " + withinpecent + "<br> below " + belowpercent + "<b>" ;
-                    }
-                    if(divs[i].id === 'tab1-' + chartid)
-                      continue;
+                  if(Tab1Component.toggle1Checked) {
+                    let toggle1comp = new Toggle1chartComponent();
+                    toggle1comp.chartinterval(minmaxdata);
+                  }
 
-                    var index = document.getElementById(divs[i].id).dataset.highchartsChart;
-                    var chartPartner = Highcharts.charts[index];
-                    chartPartner.xAxis[0].setExtremes(event.min, event.max);
-                    chartPartner.showResetZoom();
+                  if(Tab1Component.toggle2Checked) {
+                    let toggle2comp = new Toggle2chartComponent();
+                    toggle2comp.chartinterval(minmaxdata);
+                  }
+
+                  if(Tab1Component.toggle3Checked) {
+                    let toggle3comp = new Toggle3chartComponent();
+                    toggle3comp.chartinterval(minmaxdata);
                   }
                 }
             },
@@ -283,16 +316,14 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
 
   }
 
-public setinterval(xmin, xmax, ymin, ymax) {
+public setintervalfrompopup(xmin, xmax, ymin, ymax) {
   var divs = document.getElementsByClassName("rowtab1");
 
-  for(var i = 0; i < divs.length; i++){
-    var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+    var index = document.getElementById(divs[0].id).dataset.highchartsChart;
     var chartPartner = Highcharts.charts[index];
     chartPartner.xAxis[0].setExtremes(xmin, xmax);
     chartPartner.yAxis[0].setExtremes(ymin, ymax);
     chartPartner.showResetZoom();
-  }
 }
 
 public groupBy(xs, key) {
@@ -590,4 +621,12 @@ public removetoggle3series() {
 
 }
 
+public resetzoom() {
+  var divs = document.getElementsByClassName("rowtab1");
+
+    var index = document.getElementById(divs[0].id).dataset.highchartsChart;
+    var chartPartner = Highcharts.charts[index];
+    chartPartner.xAxis[0].setExtremes();
+    chartPartner.yAxis[0].setExtremes();
+}
 }
