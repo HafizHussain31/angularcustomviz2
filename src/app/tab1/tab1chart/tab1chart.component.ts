@@ -53,6 +53,7 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
 
   public static minDate = 0;
   public static maxDate = 0;
+  public static zoomed = 0;
   public static actualMinDate = 0;
   public static actualMaxDate = 0;
   public static yMax = 6;
