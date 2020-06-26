@@ -1,9 +1,11 @@
 <div class="container">
-    <p>Tab1 works</p>
+  <h1 style="margin-left:20px;">Tab 1</h1>
 
     <div class="row">
         <mat-form-field>
-            <mat-select [formControl]="charts" multiple (selectionChange)="changed()" #chartselect>
+            <mat-select [formControl]="charts" multiple (closed)="closed()" (selectionChange)="changed()" #chartselect>
+                <input style="margin-left:20px;margin-top:20px;border:none;" [(ngModel)]="filterText" placeholder ="search " (keyup)="onKey($event.target.value)">
+
                 <mat-option *ngFor="let chart of chartsList" [value]="chart">{{chart}}</mat-option>
             </mat-select>
         </mat-form-field>

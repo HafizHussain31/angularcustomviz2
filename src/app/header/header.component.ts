@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Inject } from '@angular/core';
 import { NgModule } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Toggle2chartComponent } from '../tab1/toggle2chart/toggle2chart.component';
 import { Toggle3chartComponent } from '../tab1/toggle3chart/toggle3chart.component';
@@ -17,13 +18,14 @@ export interface DialogData {
 
 export class HeaderComponent {
   name: string;
+  label: string = 'tab1';
   @Input() activeTab: string;
   @Output() activeTabChanged = new EventEmitter<string>();
 
   constructor(public dialog: MatDialog) { }
 
-  changeActiveTab(tab: string) {
-    this.activeTabChanged.emit(tab);
+  changeActiveTab() {
+    this.activeTabChanged.emit(this.activeTab);
   }
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
@@ -32,6 +34,10 @@ export class HeaderComponent {
 
     dialogRef.afterClosed().subscribe(result => {
     });
+  }
+
+  changeStatus() {
+    this.changeActiveTab()
   }
 }
 

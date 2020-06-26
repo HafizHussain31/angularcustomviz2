@@ -23,6 +23,7 @@
     "@angular/router": "~9.1.9",
     "d3v4": "^4.2.2",
     "highcharts": "^8.1.0",
+    "highcharts-custom-events": "^3.0.5",
     "highcharts-gantt": "^0.1.7",
     "moment": "^2.27.0",
     "rxjs": "~6.5.4",

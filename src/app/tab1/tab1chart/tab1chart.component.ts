@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, OnDestroy } from '@angular/core';
 import * as Highcharts from 'highcharts';
+
 import * as D3 from 'd3v4';
 
 declare var require: any;
@@ -15,6 +16,10 @@ Boost(Highcharts);
 noData(Highcharts);
 More(Highcharts);
 noData(Highcharts);
+
+import customEvents from 'highcharts-custom-events';
+customEvents(Highcharts);
+
 
 @Component({
   selector: 'app-tab1chart',
@@ -156,6 +161,25 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
               type: 'datetime',
               opposite:true,
               offset: 0,
+              labels: {
+                  events: {
+                    click: function(a) {
+                      if(this.value.includes('</a>')) {
+                        this.chart.xAxis[0].setExtremes(this.pos, this.pos + (24 * 60 * 60 * 1000));
+                      }
+                    }
+                  },
+                  formatter: function () {
+                      let val = this.value - (330 * 60000);
+                      if(this.dateTimeLabelFormat === "%e. %b") {
+                        return '<a style="fill: blue; href="javascript:void(0);" onclick="ShowOld(2367,146986,2);">' + Highcharts.dateFormat('%e.%b', this.value)
+                         + '</a> <br> <br>' +  Highcharts.dateFormat('%H.%M', this.value);
+                      }
+                      else {
+                        return Highcharts.dateFormat(this.dateTimeLabelFormat, this.value);
+                      }
+                  }
+              },
               events: {
                 afterSetExtremes: function (event) {
                   Tab1chartComponent.maxDate = event.max;
@@ -231,7 +255,7 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
             },
             yAxis: {
               title: {
-                text: 'Exchange rate'
+                text: ''
               },
               maxPadding : 0,
               min:0

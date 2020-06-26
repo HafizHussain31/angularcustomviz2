@@ -5,3 +5,10 @@
 .mat-expansion-panel{
     background: #313B50;
 }
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}

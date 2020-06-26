@@ -13,12 +13,15 @@ export class Tab1Component implements OnInit {
 
   charts = new FormControl();
   chartsList: string[] = ['Chart A', 'Chart B', 'Chart C', 'Chart D', 'Chart F', 'Chart G', 'Chart H', 'Chart I', 'Chart J', 'Chart K', 'Chart L', 'Chart M', 'Chart N', 'Special'];
+  tmpschartsList: string[] = ['Chart A', 'Chart B', 'Chart C', 'Chart D', 'Chart F', 'Chart G', 'Chart H', 'Chart I', 'Chart J', 'Chart K', 'Chart L', 'Chart M', 'Chart N', 'Special'];
   toggle1: boolean;
   toggle2: boolean;
   toggle3: boolean;
   toggle4: boolean;
   toggle5: boolean;
   splchart: boolean = false;
+  dataArray: any;
+  filterText: any = "";
   @ViewChild('chartselect') chartselect:any;
 
   constructor() {
@@ -62,6 +65,32 @@ Tab1Component.toggle2Checked = event.checked;
   onToggle1(event) {
       Tab1Component.toggle1Checked = event.checked;
   }
+
+  onKey(value) {
+      this.dataArray= [];
+      if(value === '') {
+          this.chartsList = this.tmpschartsList;
+      }
+      else {
+        this.selectSearch(value);
+      }
+  }
+
+  selectSearch(value:string){
+    let filter = value.toLowerCase();
+    for (let i = 0 ; i < this.tmpschartsList.length; i++) {
+        let option = this.tmpschartsList[i];
+        if (option.toLowerCase().indexOf(filter) >= 0) {
+            this.dataArray.push(option);
+        }
+    }
+    this.chartsList = this.dataArray;
+}
+
+closed() {
+  this.chartsList = this.tmpschartsList;
+  this.filterText = "";
+}
 
   changed() {
     if (this.charts.value.length < 5) {

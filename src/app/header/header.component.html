@@ -2,12 +2,17 @@
     <div class="container">
         <div class="row">
             <div class="pull-left">
-                <button mat-raised-button [color]="activeTab=='tab1'?'primary':''"
+
+              <mat-button-toggle-group name="status" aria-label="Status" [(ngModel)]="activeTab" (ngModelChange)="changeActiveTab()">
+              <mat-button-toggle value="tab1">Tab 1</mat-button-toggle>
+              <mat-button-toggle value="tab2" style="margin-left:50px">Tab 2</mat-button-toggle>
+            </mat-button-toggle-group>
+                <!-- <button mat-raised-button [color]="activeTab=='tab1'?'primary':''"
                     (click)='changeActiveTab("tab1");'>Tab
                     1</button>
-                <button mat-raised-button [color]="activeTab=='tab1'?'':'primary'"
+                <button mat-raised-button [color]="activeTab=='tab1'?'transparent':'primary'"
                     (click)='changeActiveTab("tab2");'>Tab
-                    2</button>
+                    2</button> -->
             </div>
             <div class="pull-right">
                 <a href="#" class="btn" style="color:white">

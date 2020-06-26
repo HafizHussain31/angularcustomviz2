@@ -9,13 +9,41 @@ import { FormControl } from '@angular/forms';
 export class Tab2Component implements OnInit {
   charts = new FormControl();
   chartsList: string[] = ['Chart A', 'Chart B', 'Chart C', 'Chart D', 'Chart H'];
-
+  tmpschartsList: string[] = ['Chart A', 'Chart B', 'Chart C', 'Chart D', 'Chart H'];
+  dataArray: any;
+  filterText: any = "";
   constructor() {
     this.bindData();
   }
 
   ngOnInit(): void {
   }
+
+  onKey(value) {
+      this.dataArray= [];
+      if(value === '') {
+          this.chartsList = this.tmpschartsList;
+      }
+      else {
+        this.selectSearch(value);
+      }
+  }
+
+  selectSearch(value:string){
+    let filter = value.toLowerCase();
+    for (let i = 0 ; i < this.tmpschartsList.length; i++) {
+        let option = this.tmpschartsList[i];
+        if (option.toLowerCase().indexOf(filter) >= 0) {
+            this.dataArray.push(option);
+        }
+    }
+    this.chartsList = this.dataArray;
+}
+
+closed() {
+  this.chartsList = this.tmpschartsList;
+  this.filterText = "";
+}
 
   bindData() {
     const selectedChart: any[] = [

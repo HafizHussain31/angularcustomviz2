@@ -108,7 +108,7 @@ export class Tab2chartComponent implements OnInit {
         },
         yAxis: {
           title: {
-            text: 'Temperature (°C)'
+            text: ''
           },
           plotLines: [{
             value: 0,
