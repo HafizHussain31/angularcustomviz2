@@ -6,6 +6,7 @@ declare var require: any;
 let Boost = require('highcharts/modules/boost');
 let noData = require('highcharts/modules/no-data-to-display');
 let More = require('highcharts/highcharts-more');
+import { Tab1chartComponent } from '../tab1chart/tab1chart.component';
 
 Boost(Highcharts);
 noData(Highcharts);
@@ -37,11 +38,14 @@ export class Toggle1chartComponent implements OnInit {
 
 
 
-      let options: Highcharts.Options = {
+      options =  {
         chart: {
           height: 120,
           type: 'line',
-          backgroundColor: 'transparent'
+          backgroundColor: 'transparent',
+          zoomType: 'x',
+          panning: true,
+          panKey: 'shift'
         },
         title: {
           text: null
@@ -49,6 +53,16 @@ export class Toggle1chartComponent implements OnInit {
         xAxis: {
           type: 'datetime',
           visible: false,
+          events: {
+            afterSetExtremes: function (event) {
+              Tab1chartComponent.maxDate = event.max;
+              Tab1chartComponent.minDate = event.min;
+
+              let tabchart1comp = new Tab1chartComponent();
+              tabchart1comp.setintervalfrompopup(Tab1chartComponent.minDate, Tab1chartComponent.maxDate, 1, 5);
+
+            }
+          }
         },
         credits : {
           enabled : false

@@ -300,7 +300,91 @@ export class Toggle2chartComponent implements OnInit {
       // create container element for the whole chart
       var svgtodelete = D3.select("#toggle2chart2");
       svgtodelete.selectAll("*").remove();
-      const svg = D3.select("#toggle2chart2").append('svg').attr('width', svgWidth).attr('height', svgHeight);
+      const svg = D3.select("#toggle2chart2").append('svg').attr('width', svgWidth).attr('height', svgHeight)
+                  .on("mousedown", svgmousedown)
+                  .on("mouseup", svgmouseup);
+
+                  let dragrect : any;
+                  let dragwidth : any;
+                  let panStartPoint : any;
+                  let panEndPoint : any;
+                  function svgmousedown() {
+
+                    if(D3.event.shiftKey) {
+                        var m = D3.mouse(this);
+                        panStartPoint = m[0];
+                    }
+                    else {
+                      var m = D3.mouse(this);
+
+                      dragrect = svg.append("rect")
+                          .attr("x", m[0])
+                          .attr("y", m[1])
+                          .attr("class", "zoomingrect")
+                          .attr("height", 0)
+                          .attr("width", 0)
+                          .style("fill", "steelblue")
+                          .style("opacity", 0.2);
+                    }
+
+                    svg.on("mousemove", svgmousemove);
+                  }
+
+                  function svgmousemove(d) {
+                    if(D3.event.shiftKey) {
+                      var m = D3.mouse(this);
+                      panEndPoint = m[0];
+                    }
+                    else {
+                      var m = D3.mouse(this);
+                      dragwidth = Math.max(0, m[0] - +dragrect.attr("x"));
+                      dragrect.attr("width", Math.max(0, m[0] - +dragrect.attr("x")))
+                          .attr("height", Math.max(0, m[1] - +dragrect.attr("y")));
+                    }
+                  }
+
+                  function svgmouseup() {
+
+                    if(D3.event.shiftKey) {
+
+                      console.log(Tab1chartComponent.maxDate, Tab1chartComponent.actualMaxDate);
+
+                      if(Tab1chartComponent.zoomed === 1) {
+
+                      var panstartDate = new Date(xScale.invert(panStartPoint)).getTime();
+                      var panendDate = new Date(xScale.invert(panEndPoint)).getTime();
+
+                      var datediff = panendDate - panstartDate;
+
+                      let tabchart1comp = new Tab1chartComponent();
+                      console.log(minStartDate + datediff, maxEndDate + datediff);
+
+                      tabchart1comp.setintervalfrompopup(Tab1chartComponent.minDate - datediff, Tab1chartComponent.maxDate - datediff, 1, 5);
+                    }
+                    }
+                    else {
+
+                      console.log(dragrect.attr("x"), dragwidth);
+                      let scaledraggedWidth = dragwidth + +dragrect.attr("x");
+
+                      if(scaledraggedWidth < 0)
+                          return;
+
+                      Tab1chartComponent.zoomed = 1;
+                      var zoomedstarttime = new Date(xScale.invert(+dragrect.attr("x") - 50)).getTime();
+                      var zoomendtime = new Date(xScale.invert(scaledraggedWidth - 50)).getTime();
+
+                      console.log(new Date(zoomedstarttime), new Date(zoomendtime));
+
+                      svg.selectAll(".zoomingrect").remove();
+
+                      let tabchart1comp = new Tab1chartComponent();
+
+                      tabchart1comp.setintervalfrompopup(zoomedstarttime, zoomendtime, 1, 6);
+                    }
+
+                    svg.on("mousemove", null);
+                  }
 
       const xScale = D3.scaleTime()
         .domain([minStartDate, maxEndDate])
