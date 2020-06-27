@@ -18,10 +18,10 @@
         <mat-slide-toggle class="example-margin" [(ngModel)]="toggle3" *ngIf="!splchart" (change)="onToggle3($event)">
             Toggle 3
         </mat-slide-toggle>
-        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle4" *ngIf="!splchart">
+        <mat-slide-toggle class="example-margin" [(ngModel)]="toggle4" *ngIf="!splchart" (change)="onToggle4($event)">
             Toggle 4
         </mat-slide-toggle>
-        <mat-slide-toggle class="example-margin" color="white" [(ngModel)]="toggle5" *ngIf="!splchart">
+        <mat-slide-toggle class="example-margin" color="white" [(ngModel)]="toggle5" *ngIf="!splchart && chartB" (change)="onToggle5($event)">
             Toggle 5
         </mat-slide-toggle>
     </div>

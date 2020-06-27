@@ -1,24 +1,34 @@
+
 <div class="modal-body" >
+  <style>
+.button {
+
+}
+</style>
   <div class="pophead">
-    <p id="header">Set Chart Min/Max</p>
-    <a style="color:#62A3F5;cursor: pointer;" (click)='restoredefault()'>Reset to default</a> <br>
+    <a style="color:#000;cursor:pointer;font-weight:bold;float:right" (click)='onCancelClick()'>x</a> <br>
+    <h2 id="header">Set Chart Min/Max</h2>
+    <a style="color:#62A3F5;cursor:pointer;font-weight:bold;" (click)='restoredefault()'>Reset to default</a> <br>
+
   </div>
   <div class="xaxis">
     <br>
     <label><b>X-axis:</b></label><br>
-    <label>Min:<input type="datetime-local" [(ngModel)]="XAxisMin" ></label>
-    <label style="margin-left: 30px;">Max:<input type="datetime-local" [(ngModel)]="XAxisMax" ></label><br><br>
+    <label>Min:<input style="margin-left: 30px;margin-top:10px;" type="datetime-local" [(ngModel)]="XAxisMin" ></label>
+    <label style="margin-left: 30px;">Max:<input style="margin-left: 30px;margin-top:10px;" type="datetime-local" [(ngModel)]="XAxisMax" ></label><br><br>
     <label><b>Y-axis:</b></label><br>
-    <label>Min:<input type="number" [(ngModel)]="YAxisMin"></label>
-    <label style="margin-left: 50px;">Max:<input type="number" [(ngModel)]="YAxisMax"></label><br> <br>
+    <label>Min:<input style="margin-left: 30px;margin-top:10px;" type="number" [(ngModel)]="YAxisMin"></label>
+    <label style="margin-left: 50px;">Max:<input style="margin-left: 30px;margin-top:10px;" type="number" [(ngModel)]="YAxisMax"></label><br> <br>
     <label><b>Tip:</b></label>   <label>Click and drag directly over chart to manually zoom</label>
 
   </div>
-  <div class="footerbtn">
-    <div class="innerfooter" style="margin-left:200px;">
+  <div >
+    <div style="margin-left:200px;">
       <br>
-      <button id="cancel" >Cancel</button>
-      <button id="apply" style="margin-left:50px;background-color:#62A3F5;color:#fff" (click)='onClickApply()'>Apply</button>
+      <button id="cancel" style="width:100px;background-color: #fff;border: #aaa 1px solid;color: #333;padding: 5px 10px;text-align: center;text-decoration: none;display: inline-block;font-size: 12px;margin: 4px 2px;cursor: pointer;"
+      (click)='onCancelClick()'>Cancel</button>
+      <button id="apply" style="width:100px;background-color: rgb(80,52,247);border: none;color: white;padding: 5px 10px;text-align: center;text-decoration: none;display: inline-block;font-size: 12px;margin: 20px;cursor: pointer;"
+        (click)='onClickApply()'>Apply</button>
     </div>
   </div>
 

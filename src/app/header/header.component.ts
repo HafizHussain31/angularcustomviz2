@@ -44,6 +44,7 @@ export class HeaderComponent {
 @Component({
   selector: 'dialog-overview-example-dialog',
   templateUrl: './dialog-overview-example-dialog.html',
+  styleUrls: ['./header.component.css']
 })
 export class DialogOverviewExampleDialog  {
   name: string;

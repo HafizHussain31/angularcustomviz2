@@ -89,10 +89,16 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
           let filteredRange = rangeData.filter(d => d['Replacement '] == selectedChart);
           let seriesData = [];
 
+
+          let maxvalue = 0;
+
           filteredData.forEach(function (d) {
             let tmp = [];
             tmp[0] = new Date(d['Date'] + ' ' + d['Time']).getTime();
             tmp[1] = parseFloat(d['Value']);
+
+            if(maxvalue < tmp[1])
+              maxvalue = tmp[1];
             seriesData.push(tmp);
           })
 
@@ -137,8 +143,75 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
           tmp1[2] = parseFloat(filteredRange[0]['Max G']);
           yellowRangeData.push(tmp1);
 
-          console.log(greenRangeData);
-          console.log(yellowRangeData);
+          for (let i = 0; i < greenRangeData.length; i++) {
+            const element = greenRangeData[i];
+            if(maxvalue < element[2])
+              maxvalue = element[2]
+          }
+
+          for (let i = 0; i < yellowRangeData.length; i++) {
+            const element = yellowRangeData[i];
+            if(maxvalue < element[2])
+              maxvalue = element[2]
+          }
+
+
+          let finalseries = [
+            {
+              type: 'arearange',
+              name: 'USD to EUR',
+              data: greenRangeData
+            }, {
+              type: 'arearange',
+              name: 'USD to EUR',
+              data: yellowRangeData
+            },
+            {
+              type: 'line',
+              name: 'USD to EUR',
+              data: seriesData
+            }];
+
+            if(Tab1chartComponent.toggle3seriestobeadded !== undefined) {
+              console.log(Tab1chartComponent.toggle3seriestobeadded);
+
+              for (let i = 0; i < Tab1chartComponent.toggle3seriestobeadded.length; i++) {
+                const element = Tab1chartComponent.toggle3seriestobeadded[i];
+                element.data[0][2] = maxvalue;
+                element.data[1][2] = maxvalue;
+              }
+
+              finalseries.push(...Tab1chartComponent.toggle3seriestobeadded);
+            }
+
+            var divs = document.getElementsByClassName("rowtab1");
+
+
+            var index = document.getElementById(divs[0].id).dataset.highchartsChart;
+            var chartPartner = Highcharts.charts[index];
+
+            if(chartPartner !== undefined) {
+
+              var seriesLength = chartPartner.series.length;
+
+              var seriestoberemoved = [];
+              for(var j = 0; j < seriesLength; j++)
+              {
+                  if(chartPartner.series[j].name.includes("toggle3")) {
+                    for (let k = 0; k < finalseries.length; k++) {
+                      console.log(finalseries[k]);
+
+                      let element = finalseries[k];
+                      if(element.name === chartPartner.series[j].name) {
+                        element = chartPartner.series[j].visible;
+                      }
+                    }
+                  }
+              }
+          }
+
+
+
 
 
           options = {
@@ -218,15 +291,19 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
 
                         console.log(divs[i].id, chartid);
 
+                        var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+                        var chartPartner = Highcharts.charts[index];
+
+                        if(chartPartner.resetZoomButton !== undefined)
+                          chartPartner.resetZoomButton.hide();
+
                         if(divs[i].id === 'tab1-' + chartid) {
                           continue;
                         }
 
-
-                        var index = document.getElementById(divs[i].id).dataset.highchartsChart;
-                        var chartPartner = Highcharts.charts[index];
                         chartPartner.xAxis[0].setExtremes(event.min, event.max);
-                        chartPartner.showResetZoom();
+
+
                   }
 
                   var minmaxdata = {
@@ -256,9 +333,7 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
             yAxis: {
               title: {
                 text: ''
-              },
-              maxPadding : 0,
-              min:0
+              }
             },
             legend: {
               enabled: false
@@ -271,27 +346,14 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
               }
             },
 
-            series: [
-              {
-                type: 'arearange',
-                name: 'USD to EUR',
-                data: greenRangeData
-              }, {
-                type: 'arearange',
-                name: 'USD to EUR',
-                data: yellowRangeData
-              },
-              {
-                type: 'line',
-                name: 'USD to EUR',
-                data: seriesData
-              }]
+            series: finalseries
           }
 
           let chartContainerId = 'tab1-' + this.chartid;
           console.log(chartContainerId);
 
           Highcharts.chart(chartContainerId, options);
+
         })
       })
     } else {
@@ -370,6 +432,10 @@ public groupBy(xs, key) {
   }, {});
 }
 
+public addtoggle3seriestonewchart() {
+
+}
+static toggle3seriestobeadded : any;
 public addtoggle3series(seriesFinalData) {
 
   var divs = document.getElementsByClassName("rowtab1");
@@ -434,8 +500,9 @@ public addtoggle3series(seriesFinalData) {
   }
 
 
-  console.log(chartseriesarr);
 
+  console.log(chartseriesarr);
+  Tab1chartComponent.toggle3seriestobeadded = chartseriesarr;
 
 
 
@@ -644,6 +711,8 @@ public filtertoggle3chart(){
 
 public removetoggle3series() {
 
+  Tab1chartComponent.toggle3seriestobeadded = [];
+
   var svgtodelete = D3.select("#toggle3blocks");
   svgtodelete.selectAll("*").remove();
 
@@ -677,5 +746,57 @@ public resetzoom() {
     var chartPartner = Highcharts.charts[index];
     chartPartner.xAxis[0].setExtremes();
     chartPartner.yAxis[0].setExtremes();
+}
+
+public addToggle5PlotLine() {
+
+  var divs = document.getElementsByClassName("rowtab1");
+  for(var i = 0; i < divs.length; i++){
+
+    if(divs[i].id.includes('ChartB')) {
+      var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+      var chartPartner = Highcharts.charts[index];
+      var seriesLength = chartPartner.series.length;
+
+      for(var j = 0; j < seriesLength; j++)
+      {
+          if(chartPartner.series[j].type === 'arearange') {
+            chartPartner.series[j].hide();
+          }
+      }
+      var yAxis = chartPartner.yAxis[0];
+
+      yAxis.addPlotLine({
+        value: 65,
+        width: 1,
+        id: 'toogle5',
+        color: 'red',
+        dashStyle: 'longdash'
+      });
+    }
+  }
+
+}
+
+public removeToggle5PlotLine() {
+  var divs = document.getElementsByClassName("rowtab1");
+  for(var i = 0; i < divs.length; i++){
+
+    if(divs[i].id.includes('ChartB')) {
+      var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+      var chartPartner = Highcharts.charts[index];
+      var seriesLength = chartPartner.series.length;
+
+      for(var j = 0; j < seriesLength; j++)
+      {
+          if(chartPartner.series[j].type === 'arearange') {
+            chartPartner.series[j].show();
+          }
+      }
+
+      var yAxis = chartPartner.yAxis[0];
+      yAxis.removePlotLine('toogle5');
+    }
+  }
 }
 }

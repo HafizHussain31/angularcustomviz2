@@ -20,6 +20,7 @@ export class Tab1Component implements OnInit {
   toggle4: boolean;
   toggle5: boolean;
   splchart: boolean = false;
+  chartB : boolean = false;
   dataArray: any;
   filterText: any = "";
   @ViewChild('chartselect') chartselect:any;
@@ -66,6 +67,23 @@ Tab1Component.toggle2Checked = event.checked;
       Tab1Component.toggle1Checked = event.checked;
   }
 
+  onToggle4(event) {
+      if(event.checked) {
+        this.toggle3 = true;
+      }
+  }
+
+  onToggle5(event) {
+      if(event.checked) {
+        let tab1chart = new Tab1chartComponent();
+        tab1chart.addToggle5PlotLine();
+      }
+      else {
+        let tab1chart = new Tab1chartComponent();
+        tab1chart.removeToggle5PlotLine();
+      }
+  }
+
   onKey(value) {
       this.dataArray= [];
       if(value === '') {
@@ -94,6 +112,16 @@ closed() {
 
   changed() {
     if (this.charts.value.length < 5) {
+
+      console.log(this.charts.value);
+
+      if(this.charts.value.includes("Chart B")) {
+        this.chartB = true;
+      }
+      else {
+        this.chartB = false;
+      }
+
       this.mySelections = this.charts.value;
       if(this.charts.value.includes('Special')) {
         this.chartselect.close();
