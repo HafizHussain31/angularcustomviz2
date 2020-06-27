@@ -1,3 +1,14 @@
-<app-header [activeTab]="tabActive" (activeTabChanged)='activeTabChanged($event)'></app-header>
-<app-tab1 [hidden]="tabActive=='tab2'"></app-tab1>
-<app-tab2 [hidden]="tabActive=='tab1'"></app-tab2>
+
+
+<div (document:mousemove)="onMouseMove($event)">
+  <div id="navi">
+    <app-header [activeTab]="tabActive" (activeTabChanged)='activeTabChanged($event)'></app-header>
+    <app-tab1 [hidden]="tabActive=='tab2'"></app-tab1>
+    <app-tab2 [hidden]="tabActive=='tab1'"></app-tab2>
+  </div>
+
+    <div id="infoi" class="overlay" style="display:none;background:yellow;width:0px; border-left:1px red solid; left: 300px;position:absolute;float:left">
+
+    </div>
+
+</div>

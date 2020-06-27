@@ -23,6 +23,7 @@ export class Tab1Component implements OnInit {
   chartB : boolean = false;
   dataArray: any;
   filterText: any = "";
+  isZoomed: boolean = false;
   @ViewChild('chartselect') chartselect:any;
 
   constructor() {
@@ -39,6 +40,11 @@ export class Tab1Component implements OnInit {
 
     this.charts.setValue(anotherList)
     this.mySelections = ['Chart A'];
+  }
+
+  restoredefault(): void {
+    let tabchart1comp = new Tab1chartComponent();
+    tabchart1comp.resetzoom();
   }
 
   onExpand() {

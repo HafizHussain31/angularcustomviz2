@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, OnDestroy } from '@angular/core';
 import { Tab1chartComponent } from '../tab1chart/tab1chart.component';
 import * as D3 from 'd3v4';
+import { AppComponent } from '../../app.component';
 
 @Component({
   selector: 'app-toggle3chart',
@@ -336,12 +337,15 @@ export class Toggle3chartComponent implements OnInit {
                     svgtodelete.selectAll("*").remove();
                     const svg = D3.select("#toggle3chart").append('svg').attr('width', svgWidth).attr('height', svgHeight)
                     .on("mousedown", svgmousedown)
-                    .on("mouseup", svgmouseup);
+                    .on("mouseup", svgmouseup)
+                    .on("mousemove", svgmousemove)
+                    .on("mouseout", svgmouseout);
 
                     let dragrect : any;
                     let dragwidth : any;
                     let panStartPoint : any;
                     let panEndPoint : any;
+                    let mouseDown : boolean = false;
                     function svgmousedown() {
 
                       if(D3.event.shiftKey) {
@@ -349,6 +353,7 @@ export class Toggle3chartComponent implements OnInit {
                           panStartPoint = m[0];
                       }
                       else {
+                        mouseDown = true;
                         var m = D3.mouse(this);
 
                         dragrect = svg.append("rect")
@@ -369,6 +374,12 @@ export class Toggle3chartComponent implements OnInit {
                         var m = D3.mouse(this);
                         panEndPoint = m[0];
                       }
+                      else if(!mouseDown) {
+                        AppComponent.highchartsmouseover = true;
+
+                        let appcomp = new AppComponent();
+                        appcomp.appMouseMoveFn();
+                      }
                       else {
                         var m = D3.mouse(this);
                         dragwidth = Math.max(0, m[0] - +dragrect.attr("x"));
@@ -378,7 +389,7 @@ export class Toggle3chartComponent implements OnInit {
                     }
 
                     function svgmouseup() {
-
+                      mouseDown = false;
                       if(D3.event.shiftKey) {
 
                         console.log(Tab1chartComponent.maxDate, Tab1chartComponent.actualMaxDate);
@@ -418,6 +429,13 @@ export class Toggle3chartComponent implements OnInit {
                       }
 
                       svg.on("mousemove", null);
+                    }
+
+                    function svgmouseout() {
+                      AppComponent.highchartsmouseover = false;
+
+                      let appcomp = new AppComponent();
+                      appcomp.appMouseMoveFn();
                     }
 
                     const xScale = D3.scaleTime()

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, OnDestroy, Inject } from '@angular/core';
 import * as Highcharts from 'highcharts';
 
 import * as D3 from 'd3v4';
@@ -11,6 +11,7 @@ import { Toggle3chartComponent } from '../toggle3chart/toggle3chart.component';
 import { Toggle2chartComponent } from '../toggle2chart/toggle2chart.component';
 import { Toggle1chartComponent } from '../toggle1chart/toggle1chart.component';
 import { Tab1Component } from '../tab1.component';
+import { AppComponent } from '../../app.component';
 
 Boost(Highcharts);
 noData(Highcharts);
@@ -35,12 +36,14 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
   below : string;
   splchart : boolean;
   ordchart : boolean = true;
+  parent1 : Tab1Component;
 
   serieColors = { 'Chart A': 'rgb(68,114,196)', 'Chart B': 'rgb(237,125,49)', 'Chart C': 'rgb(165,165,165)', 'Chart D': 'rgb(255,192,0)', 'Chart H': '#743979' };
   public options: any = {
   }
 
-  constructor() {
+  constructor(@Inject(Tab1Component) private parent: Tab1Component = null) {
+      this.parent1 = parent;
 
   }
 
@@ -72,6 +75,7 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
     let chart: string = this.chart;
     let chartid: string = this.chartid;
     let options: any = this.options;
+    let parent:any = this.parent;
     if (chart != "Special") {
       this.ordchart = true;
       this.splchart = false;
@@ -210,10 +214,6 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
               }
           }
 
-
-
-
-
           options = {
             chart: {
               zoomType: 'x',
@@ -255,10 +255,18 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
               },
               events: {
                 afterSetExtremes: function (event) {
+
                   Tab1chartComponent.maxDate = event.max;
                   Tab1chartComponent.minDate = event.min;
+
+                  if(Tab1chartComponent.minDate > Tab1chartComponent.actualMinDate)
+                    parent.isZoomed = true;
+                  else
+                    parent.isZoomed = false;
+
                   var divs = document.getElementsByClassName("rowtab1");
                   for(var i = 0; i < divs.length; i++){
+
                         let selectedchartid = "selected-" + chart.replace(/\s/g, "");
                         let chartid = chart.replace(/\s/g, "");
                         var axis = event.target, visiblePoints = 0, abovecount = 0, belowcount = 0, withincount = 0;
@@ -294,6 +302,7 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
                         var index = document.getElementById(divs[i].id).dataset.highchartsChart;
                         var chartPartner = Highcharts.charts[index];
 
+
                         if(chartPartner.resetZoomButton !== undefined)
                           chartPartner.resetZoomButton.hide();
 
@@ -302,7 +311,6 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
                         }
 
                         chartPartner.xAxis[0].setExtremes(event.min, event.max);
-
 
                   }
 
@@ -333,7 +341,9 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
             yAxis: {
               title: {
                 text: ''
-              }
+              },
+              min: 0,
+              max:maxvalue
             },
             legend: {
               enabled: false
@@ -342,7 +352,15 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
               series: {
                 marker: {
                   enabled: false
+                },
+              events: {
+                mouseOver: function () {
+                  AppComponent.highchartsmouseover = true;
+                },
+                mouseOut: function () {
+                  AppComponent.highchartsmouseover = false;
                 }
+              }
               }
             },
 

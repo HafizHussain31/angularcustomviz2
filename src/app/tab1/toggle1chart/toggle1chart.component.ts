@@ -7,6 +7,7 @@ let Boost = require('highcharts/modules/boost');
 let noData = require('highcharts/modules/no-data-to-display');
 let More = require('highcharts/highcharts-more');
 import { Tab1chartComponent } from '../tab1chart/tab1chart.component';
+import { AppComponent } from '../../app.component';
 
 Boost(Highcharts);
 noData(Highcharts);
@@ -75,10 +76,32 @@ export class Toggle1chartComponent implements OnInit {
           max: 0,
           visible: false
         },
+        tooltip: {
+          headerFormat: '<table>',
+          pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' +
+            '<td style="padding:0"><b>{point.y:.1f} %</b></td></tr>',
+          footerFormat: '</table>',
+          shared: true,
+          useHTML: true
+        },
         plotOptions: {
           series: {
             marker: {
               enabled: true
+            },
+            events: {
+              mouseOver: function () {
+                AppComponent.highchartsmouseover = true;
+
+                let appcomp = new AppComponent();
+                appcomp.appMouseMoveFn();
+              },
+              mouseOut: function () {
+                AppComponent.highchartsmouseover = false;
+
+                let appcomp = new AppComponent();
+                appcomp.appMouseMoveFn();
+              }
             }
           }
         },

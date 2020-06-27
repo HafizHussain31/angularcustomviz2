@@ -1,6 +1,8 @@
 <div class="container">
   <h1 style="margin-left:20px;">Tab 1</h1>
 
+  <button id="apply" *ngIf="isZoomed" style="margin-left:-100px;float:right;width:100px;background-color:#90908A;border: none;color: white;padding: 5px 10px;text-align: center;text-decoration: none;display: inline-block;font-size: 12px;cursor: pointer;"
+    (click)='restoredefault()' >Reset</button>
     <div class="row">
         <mat-form-field>
             <mat-select [formControl]="charts" multiple (closed)="closed()" (selectionChange)="changed()" #chartselect>
@@ -24,6 +26,8 @@
         <mat-slide-toggle class="example-margin" color="white" [(ngModel)]="toggle5" *ngIf="!splchart && chartB" (change)="onToggle5($event)">
             Toggle 5
         </mat-slide-toggle>
+
+
     </div>
 
     <app-tab1chart [hidden]="splchart" *ngFor="let chart of mySelections" [chart]="chart" ></app-tab1chart>
