@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, OnDestroy } from '@angular/core';
 import { Tab1chartComponent } from '../tab1chart/tab1chart.component';
+import { Tab1Component } from '../tab1.component';
 import * as D3 from 'd3v4';
 import { AppComponent } from '../../app.component';
 
@@ -39,6 +40,7 @@ export class Toggle3chartComponent implements OnInit {
             let endstamp = endDate.getTime();
             tmp['endDate'] = endstamp;
             tmp['dependsOn'] = [];
+            tmp['toggle4indicator'] = el['Toggle 4  Indicator'];
             states.push(tmp);
         });
 
@@ -118,7 +120,7 @@ export class Toggle3chartComponent implements OnInit {
 
                   // kind of https://s3.amazonaws.com/wordpress-production/wp-content/uploads/sites/15/2016/04/gantt-updated-dependencies-1024x578.png
 
-                  const prepareDataElement = ({ id, label, startDate, endDate, duration, dependsOn, Category, visible }) => {
+                  const prepareDataElement = ({ id, label, startDate, endDate, duration, dependsOn, Category, visible, toggle4indicator }) => {
 
                     if ((!startDate || !endDate) && !duration) {
                       //throw new Exception('Wrong element format: should contain either startDate and duration, or endDate and duration or startDate and endDate');
@@ -152,7 +154,8 @@ export class Toggle3chartComponent implements OnInit {
                       duration,
                       dependsOn,
                       Category,
-                      visible
+                      visible,
+                      toggle4indicator
                     };
                   };
 
@@ -292,6 +295,7 @@ export class Toggle3chartComponent implements OnInit {
                       const height = elementHeight;
                       const category = d.Category;
                       const visible = d.visible;
+                      const toggle4indicator = d.toggle4indicator;
 
                       const charWidth = (width / fontSize);
                       const dependsOn = d.dependsOn;
@@ -326,7 +330,8 @@ export class Toggle3chartComponent implements OnInit {
                         labelY,
                         tooltip,
                         category,
-                        visible
+                        visible,
+                        toggle4indicator
                       };
                     });
 
@@ -394,18 +399,18 @@ export class Toggle3chartComponent implements OnInit {
 
                         console.log(Tab1chartComponent.maxDate, Tab1chartComponent.actualMaxDate);
 
-                        if(Tab1chartComponent.zoomed === 1) {
+                          if(Tab1chartComponent.zoomed === 1) {
 
-                        var panstartDate = new Date(xScale.invert(panStartPoint)).getTime();
-                        var panendDate = new Date(xScale.invert(panEndPoint)).getTime();
+                          var panstartDate = new Date(xScale.invert(panStartPoint)).getTime();
+                          var panendDate = new Date(xScale.invert(panEndPoint)).getTime();
 
-                        var datediff = panendDate - panstartDate;
+                          var datediff = panendDate - panstartDate;
 
-                        let tabchart1comp = new Tab1chartComponent();
-                        console.log(minStartDate + datediff, maxEndDate + datediff);
+                          let tabchart1comp = new Tab1chartComponent();
+                          console.log(minStartDate + datediff, maxEndDate + datediff);
 
-                        tabchart1comp.setintervalfrompopup(Tab1chartComponent.minDate - datediff, Tab1chartComponent.maxDate - datediff, 1, 5);
-                      }
+                          tabchart1comp.setintervalfrompopup(Tab1chartComponent.minDate - datediff, Tab1chartComponent.maxDate - datediff, 1, 5);
+                        }
                       }
                       else {
 
@@ -490,6 +495,7 @@ export class Toggle3chartComponent implements OnInit {
                     let nextlevelCat = 0;
                     var totalCat = [];
                     var catwithval = [];
+                    var ypos = [];
                     bars
                       .append('rect')
                       .attr('x', function(d) {
@@ -545,10 +551,11 @@ export class Toggle3chartComponent implements OnInit {
                           ids[d.label] = nextlevel;
 
                           nextlevel += 30;
-
+                          ypos.push(nextlevel - 30 + catspace);
                           return nextlevel - 30 + catspace;
                         }
 
+                       ypos.push(ids[d.label] + catspace);
                        return ids[d.label] + catspace;
                      })
                       .attr('width', function(d) {
@@ -587,7 +594,47 @@ export class Toggle3chartComponent implements OnInit {
                        return fillids[d.category]
                      });
 
-                      console.log(totalCat);
+                     console.log(ypos);
+
+                     if(Tab1Component.toggl4enabled) {
+                         bars
+                           .append('svg:image')
+                           .attr('x', function(d) {
+                             console.log(d);
+
+                             return d.x - 50;
+                           })
+                           .attr('y', function(d, i) {
+                              return ypos[i] + 20;
+                          })
+                           .attr('width', function(d) {
+                            return 100})
+                           .attr('height', function(d){
+                             if(d.visible === undefined)
+                                 return 12;
+                             else {
+                               if(d.visible) {
+                                 return 12;
+                               }
+                               else {
+                                 return 0;
+                               }
+                             }
+                           })
+                           .attr("xlink:href", function(d) {
+
+                            if(d.toggle4indicator === 'Partial') {
+                              return "assets/partial.png";
+                            }
+                            else if(d.toggle4indicator === 'Compliant') {
+                              return "assets/compliant.png";
+                            }
+                            else {
+                              return "assets/non-compliant.png";
+                            }
+                           });
+
+                     }
 
 
                        let nextcatx = 0;

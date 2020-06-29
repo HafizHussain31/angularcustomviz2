@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Tab1chartComponent } from './tab1chart/tab1chart.component'
+import { Toggle3chartComponent } from './toggle3chart/toggle3chart.component';
 
 @Component({
   selector: 'app-tab1',
@@ -58,6 +59,8 @@ public static toggle3Checked = false;
   onToggle3(event) {
 Tab1Component.toggle3Checked = event.checked;
       if(!event.checked) {
+        Tab1Component.toggl4enabled = false;
+        this.toggle4 = false;
         let tab1chart = new Tab1chartComponent();
         tab1chart.removetoggle3series();
         Tab1chartComponent.selectedlabels = {};
@@ -73,9 +76,32 @@ Tab1Component.toggle2Checked = event.checked;
       Tab1Component.toggle1Checked = event.checked;
   }
 
+static toggl4enabled = false;
   onToggle4(event) {
       if(event.checked) {
         this.toggle3 = true;
+        Tab1Component.toggl4enabled = true;
+        Tab1Component.toggle3Checked = true;
+        let toggle3comp = new Toggle3chartComponent();
+        var minmaxdata = {
+          xAxisMax: Tab1chartComponent.maxDate,
+          xAxisMin: Tab1chartComponent.minDate,
+          yAxisMax: 0,
+          yAxisMin: 0
+        };
+        toggle3comp.chartinterval(minmaxdata);
+      }
+      else {
+        this.toggle3 = true;
+        let toggle3comp = new Toggle3chartComponent();
+        var minmaxdata = {
+          xAxisMax: Tab1chartComponent.maxDate,
+          xAxisMin: Tab1chartComponent.minDate,
+          yAxisMax: 0,
+          yAxisMin: 0
+        };
+        toggle3comp.chartinterval(minmaxdata);
+        Tab1Component.toggl4enabled = false;
       }
   }
 

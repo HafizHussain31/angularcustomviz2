@@ -34,7 +34,6 @@ export class Toggle4chartComponent implements OnInit {
         filteredcolumns.push(data.columns[i]);
       }
 
-
       thead.append('tr')
       .style('background-color', 'transparent')
         .selectAll('th')
@@ -43,6 +42,32 @@ export class Toggle4chartComponent implements OnInit {
         .append('th')
         .style('background-color', 'transparent')
         .text(function (d) { return d })
+        .append('img')
+        .attr('height', function(d)
+        {
+          if(d === '' || d === 'Total Count') {
+            return 0;
+          }
+          else {
+            return 15;
+          }
+        })
+        .attr('width', 15)
+        .attr('y', 25)
+        .attr('src', function(d) {
+            if(d === 'Non-compliant') {
+
+              return "../../assets/non-compliant.png";
+            }
+            else if(d === 'Partial') {
+              return "../../assets/partial.png";
+            }
+            else if(d !== '' && d !== 'Total Count') {
+              return "../../assets/compliant.png";
+            }
+            return null;
+
+        });
 
       var rows = tbody.selectAll('tr')
         .data(data)
@@ -53,12 +78,32 @@ export class Toggle4chartComponent implements OnInit {
       var cells = rows.selectAll('td')
         .data(function (row) {
           return filteredcolumns.map(function (column) {
-            return { column: column, value: row[column] }
+            console.log(row);
+
+            return { column: column, value: row[column], percent: row[column + " (%)"] }
           })
         })
         .enter()
         .append('td')
         .text(function (d) { return d.value })
+
+        rows.selectAll('td')
+        .append('text')
+        .text(function (d) { return  "   (" + d.percent + "%)" })
+        .style('color', function(d) {
+          if(d.column === 'Compliant') {
+            return "green";
+          }
+          else if (d.column === 'Non-compliant') {
+            return "red";
+          }
+          else if(d.column === 'Partial') {
+            return "yellow";
+          }
+          else {
+            return 'transparent';
+          }
+        })
     });
   }
 

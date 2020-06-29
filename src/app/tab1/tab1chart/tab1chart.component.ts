@@ -255,7 +255,6 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
               },
               events: {
                 afterSetExtremes: function (event) {
-
                   Tab1chartComponent.maxDate = event.max;
                   Tab1chartComponent.minDate = event.min;
 
