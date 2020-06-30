@@ -421,8 +421,8 @@ export class Toggle3chartComponent implements OnInit {
                             return;
 
                         Tab1chartComponent.zoomed = 1;
-                        var zoomedstarttime = new Date(xScale.invert(+dragrect.attr("x") - 50)).getTime();
-                        var zoomendtime = new Date(xScale.invert(scaledraggedWidth - 50)).getTime();
+                        var zoomedstarttime = new Date(xScale.invert(+dragrect.attr("x") - 100)).getTime();
+                        var zoomendtime = new Date(xScale.invert(scaledraggedWidth - 100)).getTime();
 
                         console.log(new Date(zoomedstarttime), new Date(zoomendtime));
 
@@ -445,7 +445,7 @@ export class Toggle3chartComponent implements OnInit {
 
                     const xScale = D3.scaleTime()
                       .domain([minStartDate, maxEndDate])
-                      .range([0, scaleWidth]);
+                      .range([0, scaleWidth - 35]);
 
                     // prepare data for every data element
                     const rectangleData = createElementData(data, elementHeight, xScale, fontSize);
@@ -456,7 +456,7 @@ export class Toggle3chartComponent implements OnInit {
                     const xAxis = D3.axisBottom(xScale);
 
                     // create container for the data
-                    const g1 = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+                    const g1 = svg.append('g').attr('transform', `translate(91.5,${margin.top})`);
 
                     const linesContainer = g1.append('g').attr('transform', `translate(0,${margin.top})`);
                     const barsContainer = g1.append('g').attr('transform', `translate(0,${margin.top})`);
@@ -497,6 +497,9 @@ export class Toggle3chartComponent implements OnInit {
                     var catwithval = [];
                     var ypos = [];
                     bars
+                      .append('svg')
+                      .attr('width',1145)
+                      .attr('height',scaleHeight)
                       .append('rect')
                       .attr('x', function(d) {
 
@@ -662,7 +665,7 @@ export class Toggle3chartComponent implements OnInit {
                             return 50 + catx;
                         })
                          .attr('width', function(d) {
-                          return scaleWidth + 120;
+                          return scaleWidth + 160;
                         })
                         .attr('height', function(d){
                           if(element.visible === undefined)
@@ -798,7 +801,7 @@ export class Toggle3chartComponent implements OnInit {
                         .append('text')
                         .style('fill', '#fff')
                         .style('font-family', 'sans-serif')
-                        .attr('x', d => scaleWidth + 20)
+                        .attr('x', d => scaleWidth - 20)
                         .attr('y', function(d) {
 
                           let catspace = 0;
@@ -843,6 +846,79 @@ export class Toggle3chartComponent implements OnInit {
                             return sum(fildata, "duration").toFixed(0);
                           });
 
+                          distinctstage = [];
+                          ids = {}
+                          nextlevel = 0;
+                          prevCat = "";
+                          nextlevelCat = 0;
+
+                      if(Tab1chartComponent.minDate > Tab1chartComponent.actualMinDate) {
+
+                        bars
+                        .filter(function(d){
+                          if(distinctstage.includes(d.label)) { return false;}
+                          distinctstage.push(d.label);
+                          return true;
+                        })
+                          .append('text')
+                          .style('fill', '#4170ae')
+                          .style('font-family', 'sans-serif')
+                          .attr('x', d => scaleWidth + 20)
+                          .attr('y', function(d) {
+
+                            let catspace = 0;
+
+                            if(prevCat === ""){
+                              prevCat = d.category;
+                              catspace = 0;
+                            }
+                            else if(prevCat !== d.category)  {
+                              prevCat = d.category;
+                              nextlevelCat += 30;
+                              catspace = nextlevelCat;
+                            }
+                            else {
+                              catspace = nextlevelCat;
+                            }
+
+                            if(ids[d.label] === undefined) {
+                              ids[d.label] = d.y;
+                              //console.log(ids[d.label], d.label);
+                              console.log(d);
+                              nextlevel += 30;
+                              return nextlevel - 15 + catspace;
+                            }
+                           return ids[d.label] + catspace;
+                          })
+                          .attr('opacity', function(d){
+                            if(d.visible === undefined)
+                                return 1;
+                            else {
+                              if(d.visible) {
+                                return 1;
+                              }
+                              else {
+                                return 0;
+                              }
+                            }
+                          })
+                          .text(function(d) {
+                                var fildata = data.filter(function(t)
+                                {
+                                  if(t.startDate.getTime() > Tab1chartComponent.minDate && t.endDate.getTime() < Tab1chartComponent.maxDate) {
+
+                                      return t.label === d.label
+                                  }
+                                  else {
+                                    return false;
+                                  }
+                                })
+
+                                return sum(fildata, "duration").toFixed(0);
+                            });
+
+                      }
+
                     bars
                       .append('title')
                       .text(d => d.tooltip);
@@ -852,10 +928,10 @@ export class Toggle3chartComponent implements OnInit {
 
                     const margin = (svgOptions && svgOptions.margin) || {
                       top: elementHeight * 2,
-                      left: elementHeight * 3
+                      left: elementHeight * 4
                     };
 
-                    const scaleWidth = ((svgOptions && svgOptions.width) || 600) - (margin.left * 3);
+                    const scaleWidth = ((svgOptions && svgOptions.width) || 600) - (margin.left * 3.4);
                     //const scaleHeight = Math.max((svgOptions && svgOptions.height) || 200, data.length * elementHeight * 2) - (margin.top * 2);
                     const scaleHeight = 1000;
                     const svgWidth = scaleWidth + (margin.left * 2);
@@ -906,7 +982,7 @@ export class Toggle3chartComponent implements OnInit {
                     sortMode: 'date', // alternatively, 'childrenCount'
                     showRelations: false,
                     svgOptions: {
-                      width: 1200,
+                      width: 1460,
                       height: 400,
                       fontSize: 12
                     }

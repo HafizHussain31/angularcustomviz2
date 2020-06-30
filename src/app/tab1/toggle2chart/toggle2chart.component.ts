@@ -382,8 +382,8 @@ export class Toggle2chartComponent implements OnInit {
                           return;
 
                       Tab1chartComponent.zoomed = 1;
-                      var zoomedstarttime = new Date(xScale.invert(+dragrect.attr("x") - 50)).getTime();
-                      var zoomendtime = new Date(xScale.invert(scaledraggedWidth - 50)).getTime();
+                      var zoomedstarttime = new Date(xScale.invert(+dragrect.attr("x") - 100)).getTime();
+                      var zoomendtime = new Date(xScale.invert(scaledraggedWidth - 100)).getTime();
 
                       console.log(new Date(zoomedstarttime), new Date(zoomendtime));
 
@@ -417,7 +417,7 @@ export class Toggle2chartComponent implements OnInit {
       const xAxis = D3.axisBottom(xScale);
 
       // create container for the data
-      const g1 = svg.append('g').attr('transform', `translate(70,${margin.top})`);
+      const g1 = svg.append('g').attr('transform', `translate(91.5,${margin.top})`);
 
       const linesContainer = g1.append('g').attr('transform', `translate(0,${margin.top})`);
       const barsContainer = g1.append('g').attr('transform', `translate(0,${margin.top})`);
@@ -453,6 +453,9 @@ export class Toggle2chartComponent implements OnInit {
 
 
       bars
+        .append('svg')
+        .attr('width',1145)
+        .attr('height',scaleHeight)
         .append('rect')
         .attr('x', d => Math.max(0, d.x))
         .attr('y', function(d) {
@@ -520,13 +523,44 @@ export class Toggle2chartComponent implements OnInit {
           .append('text')
           .style('fill', '#fff')
           .style('font-family', 'sans-serif')
-          .attr('x', d => scaleWidth + 20)
+          .attr('x', d => scaleWidth - 20)
           .attr('y', d => d.labelY)
           .text(function(d) {
               var fildata = data.filter(function(t) { return t.label === d.label})
 
               return sum(fildata, "duration").toFixed(0);
             });
+
+            distinctstage = [];
+
+            if(Tab1chartComponent.minDate > Tab1chartComponent.actualMinDate) {
+                bars
+                .filter(function(d){
+                  if(distinctstage.includes(d.label)) { return false;}
+                  distinctstage.push(d.label);
+                  return true;
+                })
+                  .append('text')
+                  .style('fill', '#4170ae')
+                  .style('font-family', 'sans-serif')
+                  .attr('x', d => scaleWidth + 20)
+                  .attr('y', d => d.labelY)
+                  .text(function(d) {
+
+                      var fildata = data.filter(function(t)
+                      {
+                        if(t.startDate.getTime() > Tab1chartComponent.minDate && t.endDate.getTime() < Tab1chartComponent.maxDate) {
+
+                            return t.label === d.label
+                        }
+                        else {
+                          return false;
+                        }
+                      })
+
+                      return sum(fildata, "duration").toFixed(0);
+                    });
+              }
 
       bars
         .append('title')
@@ -537,10 +571,10 @@ export class Toggle2chartComponent implements OnInit {
 
       const margin = (svgOptions && svgOptions.margin) || {
         top: elementHeight * 2,
-        left: elementHeight * 3
+        left: elementHeight * 4
       };
 
-      const scaleWidth = ((svgOptions && svgOptions.width) || 600) - (margin.left * 3);
+      const scaleWidth = ((svgOptions && svgOptions.width) || 600) - (margin.left * 3.4);
       const scaleHeight = Math.max((svgOptions && svgOptions.height) || 200, data.length * elementHeight * 2) - (margin.top * 2);
 
       const svgWidth = scaleWidth + (margin.left * 2);
@@ -583,7 +617,7 @@ export class Toggle2chartComponent implements OnInit {
       sortMode: 'date', // alternatively, 'childrenCount'
       showRelations: false,
       svgOptions: {
-        width: 1200,
+        width: 1455,
         height: 400,
         fontSize: 12
       }

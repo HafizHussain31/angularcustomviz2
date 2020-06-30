@@ -219,7 +219,12 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
               zoomType: 'x',
               backgroundColor: '#040A17',
               panning: true,
-              panKey: 'shift'
+              panKey: 'shift',
+              resetZoomButton: {
+                theme: {
+                    display: 'none'
+                }
+            }
             },
             title: {
               text: ''
@@ -302,8 +307,9 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
                         var chartPartner = Highcharts.charts[index];
 
 
-                        if(chartPartner.resetZoomButton !== undefined)
-                          chartPartner.resetZoomButton.hide();
+                        if(chartPartner.resetZoomButton) {
+                          //chartPartner.resetZoomButton.destroy();
+                        }
 
                         if(divs[i].id === 'tab1-' + chartid) {
                           continue;
@@ -525,14 +531,18 @@ public addtoggle3series(seriesFinalData) {
 
 }
 
+static groupedDatabkup = {}
 public addtoggle3labels(groupedata) {
 
+  console.log(groupedata);
+
+
+Tab1chartComponent.groupedDatabkup = groupedata;
 
 var catUnique = Object.keys(groupedata);
 var catValues = Object.values(groupedata);
 var finaldata = [];
 console.log(catUnique);
-
 for (let i = 0; i < catUnique.length; i++) {
 
   var datum = {
@@ -555,6 +565,18 @@ var height = 50;
                   .data(finaldata)
                 .enter().append("g");
 
+                bar.append("rect")
+                    .attr("class", "selectedbar")
+                    .attr("id", function(d, i) { return "selectedbar" + i })
+                    .attr("x", function(d, i) { return i * 150; })
+                    .attr("y", 0)
+                    .attr("width", 120)
+                    .style("stroke", function(d, i) { return color(i);  } )
+                    .style("stroke-width", 1)
+                    .style("fill", "transparent")
+                    .attr("height", 50)
+                    .style("opacity", 0);
+
               bar.append("rect")
                   .attr("class", "bar")
                   .attr("x", function(d, i) { return i * 150 + 10; })
@@ -573,22 +595,7 @@ var height = 50;
                         return D3.rgb(D3.select(this).style("fill")).darker(-0.4);
                         });
                   })
-                  .on("click", function(d) {
-                      console.log(d);
-
-                  });
-
-                  bar.append("rect")
-                      .attr("class", "selectedbar")
-                      .attr("id", function(d, i) { return "selectedbar" + i })
-                      .attr("x", function(d, i) { return i * 150; })
-                      .attr("y", 0)
-                      .attr("width", 120)
-                      .style("stroke", function(d, i) { return color(i);  } )
-                      .style("stroke-width", 1)
-                      .style("fill", "transparent")
-                      .attr("height", 50)
-                      .style("opacity", 0);
+                  .on("click", this.clickevent);
 
               bar.append("text")
                   .attr("x", function(d, i) { return i * 150 + 50; })
@@ -649,13 +656,68 @@ public seealltoggle3labels() {
                 }
   }
 
+  for (let i = 0; i < D3.selectAll(".selectedbar")['_groups'][0].length; i++) {
+    const element = D3.selectAll(".selectedbar")['_groups'][0][i];
+
+    element['__data__'].clicked = false;
+  }
+
+  D3.selectAll(".selectedbar").style('opacity', 0);
+
   let toggle3comp = new Toggle3chartComponent();
   let undefineddata;
   toggle3comp.chartinterval(undefineddata);
+
 }
 
 public static selectedlabels = {};
 public clickevent(d, colorindex) {
+
+
+let keys = Object.keys(Tab1chartComponent.selectedlabels);
+
+let alllabelsdisabled = false;
+if(d.clicked === true) {
+
+
+  for (let i = 0; i < keys.length; i++) {
+    alllabelsdisabled = true;
+    if(keys[i] === d.name + "_toggle3") {
+      continue;
+    }
+    if(Tab1chartComponent.selectedlabels[keys[i]].clicked) {
+      alllabelsdisabled = false;
+      break;
+    }
+  }
+}
+
+if(alllabelsdisabled) {
+  var divs = document.getElementsByClassName("rowtab1");
+
+  for(var i = 0; i < divs.length; i++){
+    var index = document.getElementById(divs[i].id).dataset.highchartsChart;
+    var chartPartner = Highcharts.charts[index];
+    var seriesLength = chartPartner.series.length;
+
+                var seriestoberemoved = [];
+                for(var j = 0; j < seriesLength; j++)
+                {
+                    if(chartPartner.series[j].name.includes("toggle3")) {
+                      chartPartner.series[j].show();
+                    }
+                }
+  }
+
+  d.clicked = !d.clicked;
+  D3.selectAll(".selectedbar").style('opacity', 0);
+
+  Tab1chartComponent.selectedlabels = {};
+  let toggle3comp = new Toggle3chartComponent();
+  let undefineddata;
+  toggle3comp.chartinterval(undefineddata);
+  return;
+}
 
 if(d.clicked === undefined)
   d.clicked = false;
@@ -717,8 +779,6 @@ Tab1chartComponent.selectedlabels[d.name + "_toggle3"].clicked = d.clicked;
     let toggle3comp = new Toggle3chartComponent();
     let undefineddata;
     toggle3comp.chartinterval(undefineddata);
-
-
 
 }
 

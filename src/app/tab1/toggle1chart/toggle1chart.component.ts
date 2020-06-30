@@ -54,6 +54,8 @@ export class Toggle1chartComponent implements OnInit {
         xAxis: {
           type: 'datetime',
           visible: false,
+          max : Tab1chartComponent.actualMaxDate,
+          min : Tab1chartComponent.actualMinDate,
           events: {
             afterSetExtremes: function (event) {
               Tab1chartComponent.maxDate = event.max;

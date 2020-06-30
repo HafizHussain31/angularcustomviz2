@@ -1,7 +1,7 @@
 
 
-<div (document:mousemove)="onMouseMove($event)">
-  <div id="navi">
+<div (document:mousemove)="onMouseMove($event)" >
+  <div id="navi" >
     <app-header [activeTab]="tabActive" (activeTabChanged)='activeTabChanged($event)'></app-header>
     <app-tab1 [hidden]="tabActive=='tab2'"></app-tab1>
     <app-tab2 [hidden]="tabActive=='tab1'"></app-tab2>
