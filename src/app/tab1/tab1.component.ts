@@ -126,6 +126,10 @@ static toggl4enabled = false;
       }
   }
 
+handleInput(event: KeyboardEvent): void{
+   event.stopPropagation();
+} 
+
   selectSearch(value:string){
     let filter = value.toLowerCase();
     for (let i = 0 ; i < this.tmpschartsList.length; i++) {

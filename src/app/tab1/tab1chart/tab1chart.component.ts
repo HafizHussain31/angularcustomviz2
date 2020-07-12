@@ -300,6 +300,9 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
 
                           document.getElementById(selectedchartid).innerHTML = "<b>Selected <br>"+ "above " +  abovepercent + "<br> within " + withinpecent + "<br> below " + belowpercent + "<b>" ;
                         }
+                        else {
+                          document.getElementById(selectedchartid).innerHTML = "";
+                        }
 
                         console.log(divs[i].id, chartid);
 
@@ -407,6 +410,7 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
           },
           yAxis: {
             min: 0,
+            max: 100,
             title: {
               text: 'Percent'
             }
@@ -443,6 +447,9 @@ public setintervalfrompopup(xmin, xmax, ymin, ymax) {
 
     var index = document.getElementById(divs[0].id).dataset.highchartsChart;
     var chartPartner = Highcharts.charts[index];
+
+    console.log(xmin + (550 * 60000), xmax);
+
     chartPartner.xAxis[0].setExtremes(xmin, xmax);
     chartPartner.yAxis[0].setExtremes(ymin, ymax);
     chartPartner.showResetZoom();

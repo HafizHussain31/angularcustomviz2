@@ -32,6 +32,7 @@ export class Tab1specialchartComponent implements OnInit {
 
     D3.csv('./assets/Tab1Special.csv', (data) => {
       console.log(data);
+      alert("aa")
 
       this.options = {
         chart: {
@@ -39,7 +40,7 @@ export class Tab1specialchartComponent implements OnInit {
           backgroundColor: '#040A17'
         },
         title: {
-          text: 'Percent'
+          text: 'Percent nnn d'
         },
         credits: {
           enabled: false
@@ -53,8 +54,9 @@ export class Tab1specialchartComponent implements OnInit {
         },
         yAxis: {
           min: 0,
+          max: 100,
           title: {
-            text: 'Percent'
+            text: 'Percent  m'
           }
         },
         tooltip: {

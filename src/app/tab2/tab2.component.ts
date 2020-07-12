@@ -45,6 +45,10 @@ closed() {
   this.filterText = "";
 }
 
+handleInput(event: KeyboardEvent): void{
+   event.stopPropagation();
+} 
+
   bindData() {
     const selectedChart: any[] = [
       this.chartsList[0]

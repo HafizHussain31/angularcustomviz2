@@ -75,7 +75,7 @@ ngOnInit(): void {
 
 
   onClickApply(): void {
-    console.log(this.XAxisMax, this.XAxisMin, this.YAxisMax, this.YAxisMin);
+    console.log(new Date(this.XAxisMin), this.XAxisMax, this.YAxisMax, this.YAxisMin);
 
     Tab1chartComponent.yMax = this.YAxisMax;
     Tab1chartComponent.yMin = this.YAxisMin;

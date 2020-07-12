@@ -52,7 +52,6 @@ export class Tab2chartComponent implements OnInit {
         let tmpdata = [];
 
         filteredData.forEach(filtereddatum => {
-
           if(filtereddatum[chart] !== '') {
 
               let min = filtereddatum["Date Time"].split(':')[0];
@@ -75,6 +74,12 @@ export class Tab2chartComponent implements OnInit {
         tmp['color'] = this.serieColors[chart];
         seriesData.push(tmp);
       })
+
+      let showInLegend = false;
+
+      if(selectedCharts.length > 1) {
+        showInLegend = true
+      }
 
 
       console.log(seriesData);
@@ -124,7 +129,7 @@ export class Tab2chartComponent implements OnInit {
           align: 'right',
           verticalAlign: 'middle',
           borderWidth: 0,
-          showInLegend: false,
+          enabled: showInLegend,
           // labelFormat: '{data]'
         },
         series: seriesData

@@ -2,7 +2,7 @@
 <h1 style="margin-left:20px;">Tab 2</h1>
     <mat-form-field>
         <mat-select [formControl]="charts" multiple (closed)="closed()">
-          <input style="margin-left:20px;margin-top:20px;border:none;" [(ngModel)]="filterText" placeholder ="search "  (keyup)="onKey($event.target.value)">
+          <input style="margin-left:20px;margin-top:20px;border:none;" [(ngModel)]="filterText" placeholder ="search "  (keyup)="onKey($event.target.value)" (keydown)="handleInput($event)">
             <mat-option *ngFor="let chart of chartsList" [value]="chart">{{chart}}</mat-option>
             </mat-select>
     </mat-form-field>
