@@ -33,6 +33,8 @@ onMouseMove(e) {
     var height = Math.max( body.scrollHeight, body.offsetHeight,
                        html.clientHeight, html.scrollHeight, html.offsetHeight );
 
+    height -= 300;
+
     document.getElementById("infoi").style.height = height + 'px';
   }
   else {
