@@ -45,25 +45,27 @@ export class Tab2chartComponent implements OnInit {
       })
 
       let seriesData = [];
+      let categories = [];
       selectedCharts.forEach((chart) => {
         let tmp = {}, tmpMarker = {};
         // tmpMarker['fillColor'] = "transparent";
         // tmp['marker'] = tmpMarker;
         let tmpdata = [];
 
+
         filteredData.forEach(filtereddatum => {
           if(filtereddatum[chart] !== '') {
-
+              categories.push(filtereddatum["Date Time"]);
               let min = filtereddatum["Date Time"].split(':')[0];
               let sec = filtereddatum["Date Time"].split(':')[1].split(".")[0];
               let ms = parseInt(filtereddatum["Date Time"].split(':')[1].split(".")[1]) * 100;
               console.log(min, sec, ms);
 
               filtereddatum["DateTime"] = new Date().getTime() + new Date(0,0,0,0, min, sec, ms).getTime();
-              let tempdatum = [];
-              tempdatum.push(filtereddatum["DateTime"]);
-              tempdatum.push(parseFloat(filtereddatum[chart]));
-              tmpdata.push(tempdatum);
+              //let tempdatum = [];
+              //tempdatum.push(filtereddatum["DateTime"]);
+              //tempdatum.push(parseFloat(filtereddatum[chart]));
+              tmpdata.push(parseFloat(filtereddatum[chart]));
           }
         });
 
@@ -103,13 +105,13 @@ export class Tab2chartComponent implements OnInit {
           enabled : false
         },
         xAxis: {
-          type: 'datetime',
           opposite:true,
-          labels: {
-             formatter: function() {
-               return Highcharts.dateFormat("%M:%S.%MS", this.value);
-             }
-           }
+          categories: categories
+          // labels: {
+          //    formatter: function() {
+          //      return Highcharts.dateFormat("%M:%S.%MS", this.value);
+          //    }
+          //  }
         },
         yAxis: {
           title: {
@@ -122,7 +124,7 @@ export class Tab2chartComponent implements OnInit {
           }]
         },
         tooltip: {
-          valueSuffix: '°C'
+          valueSuffix: ''
         },
         legend: {
           layout: 'vertical',

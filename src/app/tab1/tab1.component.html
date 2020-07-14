@@ -7,7 +7,10 @@
     <div class="row" style="margin-left:100px;margin-right:100px;">
         <mat-form-field>
             <mat-select [formControl]="charts" multiple (closed)="closed()" (selectionChange)="changed()" #chartselect>
-                <input style="margin-left:20px;margin-top:20px;border:none;" [(ngModel)]="filterText" placeholder ="search " (keyup)="onKey($event.target.value)" (keydown)="handleInput($event)">
+              <div id="input_container">
+                <img src="../../assets/search.png" id="input_img"/>
+                <input style="margin-left:30px;margin-top:20px;border:none;" [(ngModel)]="filterText" placeholder ="search " (keyup)="onKey($event.target.value)" (keydown)="handleInput($event)">
+                </div>
 
                 <mat-option *ngFor="let chart of chartsList" [value]="chart">{{chart}}</mat-option>
             </mat-select>
