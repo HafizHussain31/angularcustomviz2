@@ -830,6 +830,8 @@ public resetzoom() {
     var chartPartner = Highcharts.charts[index];
     chartPartner.xAxis[0].setExtremes();
     chartPartner.yAxis[0].setExtremes();
+    Tab1chartComponent.yMax = 6;
+    Tab1chartComponent.yMin = 1;
 }
 
 public addToggle5PlotLine() {

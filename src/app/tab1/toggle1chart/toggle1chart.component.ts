@@ -46,7 +46,12 @@ export class Toggle1chartComponent implements OnInit {
           backgroundColor: 'transparent',
           zoomType: 'x',
           panning: true,
-          panKey: 'shift'
+          panKey: 'shift',
+          resetZoomButton: {
+            theme: {
+                display: 'none'
+            }
+        }
         },
         title: {
           text: null

@@ -88,6 +88,8 @@ export class DialogOverviewExampleDialog  {
     @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
 ngOnInit(): void {
+  console.log(new Date(Tab1chartComponent.minDate));
+
   this.XAxisMin = new Date(Tab1chartComponent.minDate).toISOString().slice(0, 16);
   this.XAxisMax = new Date(Tab1chartComponent.maxDate).toISOString().slice(0, 16);
   this.YAxisMax = Tab1chartComponent.yMax;
@@ -111,17 +113,27 @@ ngOnInit(): void {
     Tab1chartComponent.yMax = this.YAxisMax;
     Tab1chartComponent.yMin = this.YAxisMin;
 
+    var d = new Date();
+
+    var datemin = new Date(this.XAxisMin);
+    var datemax = new Date(this.XAxisMax);
+
+
+
     var data = {
-      xAxisMax: new Date(this.XAxisMax).getTime(),
-      xAxisMin: new Date(this.XAxisMin).getTime(),
+      xAxisMax: datemax.setMinutes(datemax.getMinutes() - d.getTimezoneOffset()),
+      xAxisMin: datemin.setMinutes(datemin.getMinutes() - d.getTimezoneOffset()),
       yAxisMax: this.YAxisMax,
       yAxisMin: this.YAxisMin
     };
 
     let tabchart1comp = new Tab1chartComponent();
 
+    console.log(data);
 
-    tabchart1comp.setintervalfrompopup(new Date(this.XAxisMin).getTime(), new Date(this.XAxisMax).getTime(), this.YAxisMin, this.YAxisMax);
+
+
+    tabchart1comp.setintervalfrompopup(data.xAxisMin, data.xAxisMax, this.YAxisMin, this.YAxisMax);
 
 
     this.dialogRef.close();
