@@ -84,12 +84,12 @@ export class Toggle1chartComponent implements OnInit {
           visible: false
         },
         tooltip: {
-          headerFormat: '<table>',
-          pointFormat: '<tr><td style="color:{series.color};padding:0"></td>' +
-            '<td style="padding:0"><b>{point.y:.1f} %</b></td></tr>',
-          footerFormat: '</table>',
-          shared: true,
-          useHTML: true
+          useHTML: true,
+          backgroundColor: '#000000',
+          borderColor: '#000000',
+          style: {
+            color: 'gray'
+          }
         },
         plotOptions: {
           series: {
@@ -116,10 +116,23 @@ export class Toggle1chartComponent implements OnInit {
         series: [{
           name: "Winter 2014-2015",
           data: seriesData,
-          type: "line"
+          type: "line",
+          point: {
+          events: {
+            click: function(e) {
+              this.series.chart.tooltip.refresh(this, e, true);
+            }
+          }
+        }
         }
         ]
       }
+
+      Highcharts.wrap(Highcharts.Tooltip.prototype, 'refresh', function(proceed, point, event, click) {
+        if (click) {
+          proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+        }
+      });
 
       Highcharts.chart('toggle1chart2', options);
     })
