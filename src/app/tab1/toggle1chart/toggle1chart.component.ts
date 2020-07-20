@@ -114,7 +114,7 @@ export class Toggle1chartComponent implements OnInit {
         },
         colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
         series: [{
-          name: "Winter 2014-2015",
+          name: "",
           data: seriesData,
           type: "line",
           point: {

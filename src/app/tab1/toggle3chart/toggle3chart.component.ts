@@ -15,6 +15,7 @@ export class Toggle3chartComponent implements OnInit {
 
   constructor() { }
 
+  public static toogle3ClickNumber = 0;
   ngOnInit(): void {
     var
       series,
@@ -417,7 +418,7 @@ export class Toggle3chartComponent implements OnInit {
                         console.log(dragrect.attr("x"), dragwidth);
                         let scaledraggedWidth = dragwidth + +dragrect.attr("x");
 
-                        if(scaledraggedWidth < 0)
+                        if(scaledraggedWidth < 0 || isNaN(scaledraggedWidth))
                             return;
 
                         Tab1chartComponent.zoomed = 1;
@@ -501,6 +502,8 @@ export class Toggle3chartComponent implements OnInit {
                       .attr('width',1145)
                       .attr('height',scaleHeight)
                       .append('rect')
+                      .attr('id', function(d) { return d.id})
+                      .attr('class', 'datarect')
                       .attr('x', function(d) {
 
                         if(d.x > 0 && d.x < scaleWidth)
@@ -595,9 +598,56 @@ export class Toggle3chartComponent implements OnInit {
                            }
                         }
                        return fillids[d.category]
-                     });
+                     })
+                      .on("mousedown", rectmousedown);
 
-                     console.log(ypos);
+                      function rectmousedown(d) {
+
+                        console.log(d);
+
+                        if(Toggle3chartComponent.toogle3ClickNumber === 0) {
+                          let datarect = svg.selectAll(".datarect");
+                          let catrect = svg.selectAll(".category");
+
+                          for (let i = 0; i < catrect._groups[0].length; i++) {
+                            const element = catrect._groups[0][i];
+
+                            if(element.id !== d.category) {
+                              let idwithspaces = element.id.replace(" ", "\\ ")
+                              svg.select("#" + idwithspaces).style("opacity", "0.5");
+                            }
+                          }
+
+                          for (let i = 0; i < datarect._groups[0].length; i++) {
+
+                            const element = datarect._groups[0][i];
+
+                            if(element.id !== d.id) {
+                              svg.select("#" + element.id).style("opacity", "0.5");
+                            }
+                          }
+                          Toggle3chartComponent.toogle3ClickNumber++;
+                        }
+                        else if(Toggle3chartComponent.toogle3ClickNumber === 1) {
+
+                           var secondClickstartDate = new Date(xScale.invert(d.x)).getTime();
+                           var secondClickendDate = new Date(xScale.invert(d.xEnd)).getTime();
+
+                            var datediff = secondClickendDate - secondClickstartDate;
+
+                            let tabchart1comp = new Tab1chartComponent();
+
+                            tabchart1comp.setintervalfrompopup(secondClickstartDate, secondClickendDate, 1, 5);
+                            Toggle3chartComponent.toogle3ClickNumber++;
+                        }
+                        else {
+                          let tabchart1comp = new Tab1chartComponent();
+
+                          tabchart1comp.setintervalfrompopup(Tab1chartComponent.actualMinDate, Tab1chartComponent.actualMaxDate, 1, 5);
+                          Toggle3chartComponent.toogle3ClickNumber = 0;
+                        }
+                      }
+
 
                      if(Tab1Component.toggl4enabled) {
                          bars
@@ -656,6 +706,7 @@ export class Toggle3chartComponent implements OnInit {
                          .attr('x', 0)
                          .attr('rx', 10)
                          .attr('ry', 10)
+                         .attr('class', 'category')
                          .attr('id', element.category)
                          .attr('y', function(d) {
                            let catx = nextcatx;
