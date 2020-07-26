@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, OnDestroy } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { ganttChart } from 'highcharts/highcharts-gantt';
 import { Tab1chartComponent } from '../tab1chart/tab1chart.component';
+import { Toggle3chartComponent } from '../toggle3chart/toggle3chart.component';
 import * as D3 from 'd3v4';
 
 declare var require: any;
@@ -22,6 +23,9 @@ noData(Highcharts);
 export class Toggle2chartComponent implements OnInit {
 
   @Input() filteredData: any;
+          toggle3X: any;
+          toggle3XEnd: any;
+
 
   public options: any = {
   }
@@ -476,6 +480,9 @@ export class Toggle2chartComponent implements OnInit {
         .style('fill', '#F3D849')
         .style('stroke', 'black');
 
+
+
+
         // bars
         // .filter(function(d){
         //   var ypos = domain.indexOf(d.y);
@@ -565,6 +572,27 @@ export class Toggle2chartComponent implements OnInit {
       bars
         .append('title')
         .text(d => d.tooltip);
+
+        if(Toggle3chartComponent.toogle3ClickNumber === 1) {
+            console.log(this.toggle3X, this.toggle3XEnd)
+            svg
+              .append('rect')
+              .attr('x', 90)
+              .attr('y', 0)
+              .attr('width', this.toggle3X)
+              .attr('height', svgHeight)
+              .style('fill', '#313B50')
+              .style('opacity', 0.7);
+
+              svg
+                .append('rect')
+                .attr('x', 90 + this.toggle3XEnd)
+                .attr('y', 0)
+                .attr('width', svgWidth)
+                .attr('height', svgHeight)
+                .style('fill', '#313B50')
+                .style('opacity', 0.7);
+          }
     };
 
     const createGanttChart = (placeholder, data, { elementHeight, sortMode, showRelations, svgOptions }) => {
@@ -630,8 +658,10 @@ export class Toggle2chartComponent implements OnInit {
 
   }
 
-  public chartinterval(data){
+  public chartinterval(data, x, xEnd){
     this.filteredData = data;
+    this.toggle3X = x;
+    this.toggle3XEnd = xEnd;
     this.ngOnInit();
 
     }

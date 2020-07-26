@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, OnDestroy } from '@angular/core';
 import { Tab1chartComponent } from '../tab1chart/tab1chart.component';
 import { Tab1Component } from '../tab1.component';
+import { Toggle2chartComponent } from '../toggle2chart/toggle2chart.component';
 import * as D3 from 'd3v4';
 import { AppComponent } from '../../app.component';
 
@@ -627,6 +628,10 @@ export class Toggle3chartComponent implements OnInit {
                             }
                           }
                           Toggle3chartComponent.toogle3ClickNumber++;
+
+                          let toggle2chart = new Toggle2chartComponent();
+
+                          toggle2chart.chartinterval(undefined, d.x, d.xEnd);
                         }
                         else if(Toggle3chartComponent.toogle3ClickNumber === 1) {
 
@@ -639,6 +644,8 @@ export class Toggle3chartComponent implements OnInit {
 
                             tabchart1comp.setintervalfrompopup(secondClickstartDate, secondClickendDate, 1, 5);
                             Toggle3chartComponent.toogle3ClickNumber++;
+
+
                         }
                         else {
                           let tabchart1comp = new Tab1chartComponent();

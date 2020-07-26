@@ -336,7 +336,7 @@ export class Tab1chartComponent implements OnInit, OnDestroy {
 
                   if(Tab1Component.toggle2Checked) {
                     let toggle2comp = new Toggle2chartComponent();
-                    toggle2comp.chartinterval(minmaxdata);
+                    toggle2comp.chartinterval(minmaxdata, undefined, undefined);
                   }
 
                   if(Tab1Component.toggle3Checked) {
